@@ -1,6 +1,4 @@
-from azure.search.documents.indexes._search_index_client import SearchIndexClient
-from azure.search.documents.indexes.models import AnalyzeTextOptions
-from src.utils.common_utils import _get_search_index_client, analyze_text
+from src.utils.common_utils import  analyze_text
 
 if __name__ == "__main__":
 
