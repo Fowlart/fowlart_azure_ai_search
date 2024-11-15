@@ -5,6 +5,7 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
 from azure.search.documents.indexes._generated.models import SearchFieldDataType, CorsOptions, ScoringProfile
 from azure.search.documents.indexes.models import (
+    SemanticSearch,
     SimpleField,
     SearchableField,
     ComplexField,
@@ -12,7 +13,8 @@ from azure.search.documents.indexes.models import (
     LexicalAnalyzer,
     LexicalTokenizer,
     TokenFilter,
-    CharFilter, AnalyzeTextOptions)
+    CharFilter,
+    AnalyzeTextOptions)
 
 class bcolors:
     HEADER = '\033[95m'
@@ -64,7 +66,9 @@ def create_an_index(
         analyzers: Optional[List[LexicalAnalyzer]] = None,
         tokenizer: Optional[List[LexicalTokenizer]] = None,
         t_filter: Optional[List[TokenFilter]] = None,
-        ch_filters: Optional[List[CharFilter]] = None) -> SearchIndex:
+        ch_filters: Optional[List[CharFilter]] = None,
+        semantic_search: Optional[SemanticSearch] = None
+) -> SearchIndex:
 
     search_index_client: SearchIndexClient = _get_search_index_client()
 
@@ -79,7 +83,8 @@ def create_an_index(
                         analyzers=analyzers,
                         tokenizers=tokenizer,
                         token_filters=t_filter,
-                        char_filters=ch_filters
+                        char_filters=ch_filters,
+                        semantic_search=semantic_search
                         )
 
     result: SearchIndex = search_index_client.create_index(index)

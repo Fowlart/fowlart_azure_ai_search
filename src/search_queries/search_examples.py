@@ -1,14 +1,37 @@
+import json
 from dataclasses import fields
 
 from azure.search.documents import SearchClient, SearchItemPaged
 from src.utils.common_utils import get_search_client
 from src.utils.common_utils import bcolors as color
+import json
 
 def print_search_result(iterator):
     for x in iterator:
         print(color.OKCYAN)
-        print(x)
+        print(json.dumps(x,indent=3))
         print(color.ENDC)
+
+
+def semantic_search(client: SearchClient,
+                    text: str):
+
+    print(f"Applied semantic search with the query {color.OKCYAN} {text} {color.ENDC}...")
+    print(color.ENDC)
+
+    result: SearchItemPaged[dict] = client.search(
+        search_text=text,
+        include_total_count=True,
+        highlight_fields="ReviewText",
+        query_type="semantic",
+        semantic_configuration_name="my_semantic_configuration",
+        scoring_statistics = "global")
+
+    print(f"results number: {result.get_count()}")
+
+    print_search_result(result)
+
+
 
 #goes to analyzer
 def all_terms_are_present(client: SearchClient,
@@ -23,8 +46,9 @@ def all_terms_are_present(client: SearchClient,
         include_total_count=True,
         highlight_fields="ReviewText",
         search_mode="all",
-        query_type="full"
-    )
+        query_type="full",
+        scoring_statistics = "global")
+
     print(f"results number: {result.get_count()}")
     print_search_result(result)
 
@@ -88,7 +112,7 @@ if __name__ == "__main__":
 
     # proximity_search(client)
 
-    # all_terms_are_present(client, ["saving","pictures","buy"])
+    #all_terms_are_present(client, ["picture"])
 
     # with proximity search
     # all_terms_are_present(client, ["saving", "pitcures~", "buy"])
@@ -99,4 +123,6 @@ if __name__ == "__main__":
     # with regexp and term boosting
     #all_terms_are_present(client, ["cards", "/[wear|tear]/","tear^3"])
 
-    filter_by_field(client=client, filter="ReviewRating eq 3", query="*")
+    #filter_by_field(client=client, filter="ReviewRating eq 3", query="*")
+
+    semantic_search(client,"ultrasound pictures keeping")
