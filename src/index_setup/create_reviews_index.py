@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from azure.search.documents.indexes.models import (ComplexField,
                                                    TokenFilter,
@@ -16,7 +16,7 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    SemanticPrioritizedFields,
                                                    SemanticField)
 
-from src.utils.common_utils import create_an_index
+from src.utils.common_utils import create_an_index, get_custom_analyzer
 
 if __name__ == "__main__":
 
@@ -45,54 +45,20 @@ if __name__ == "__main__":
                         retrievable=True,
                         filterable=False,
                         sortable=False,
-                        facetable=True),
-
-        # SearchableField(name="ReviewLanguage",
-        #                 type=SearchFieldDataType.String,
-        #                 searchable=True,
-        #                 retrievable=True,
-        #                 filterable=True,
-        #                 sortable=False,
-        #                 facetable=True),
-
-        # SearchableField(name="SentimentLabel",
-        #                 type=SearchFieldDataType.String,
-        #                 searchable=True,
-        #                 retrievable=True,
-        #                 filterable=True,
-        #                 sortable=False,
-        #                 facetable=True),
-
-        # SearchableField(name="KeyPhrases",
-        #                 type=SearchFieldDataType.String,
-        #                 searchable=True,
-        #                 retrievable=True,
-        #                 filterable=True,
-        #                 sortable=False,
-        #                 facetable=True,
-        #                 collection=True)
+                        facetable=True,
+                        analyzer_name="funny_standard_lucene")
     ]
 
 
     # add custom analyzers
     my_custom_lucene_analyzer = LuceneStandardAnalyzer(
         name="funny_standard_lucene",
-        max_token_length=255,
-        stopwords=["dog","pig","cat"])
-
-    pattern_tokenizer = PatternTokenizer(pattern=r"\W+",name="my_pattern_tokenizer")
-    token_filter = StopwordsTokenFilter(name="my_token_filter", stopwords=["Dog","Cat","Pig"],ignore_case=True)
-    char_filter = PatternReplaceCharFilter(name="my_char_filter",pattern=r"=n=",replacement="<new_line>")
-
-
-    my_custom_analyzer = CustomAnalyzer(name="my_custom_analyzer",
-                                        tokenizer_name="my_pattern_tokenizer",
-                                        token_filters=["my_token_filter"],
-                                        char_filters=["my_char_filter"])
+        max_token_length=300)
 
 
     # semantic search
     semantic_content_field = SemanticField(field_name="ReviewText")
+
     semantic_prioritized_fields = SemanticPrioritizedFields(content_fields=[semantic_content_field])
 
     semantic_configuration = SemanticConfiguration(name="my_semantic_configuration",
@@ -101,11 +67,12 @@ if __name__ == "__main__":
                                         configurations=[semantic_configuration])
 
 
+    # custom_analyzer: Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer] = get_custom_analyzer()
+
 
     create_an_index("fowlart_product_review_hybrid",
                     fields,
-                    [my_custom_lucene_analyzer, my_custom_analyzer],
-                    [pattern_tokenizer],
-                    [token_filter],
-                    [char_filter],
+
+                    [my_custom_lucene_analyzer],
+
                     semantic_search=my_semantic_search)

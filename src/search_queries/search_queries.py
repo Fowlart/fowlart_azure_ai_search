@@ -10,21 +10,38 @@ def print_search_result(iterator):
         print(color.ENDC)
 
 
+def simple_search(client: SearchClient, text: str):
+
+    print(f"Applied simple search with the query {color.OKCYAN} {text} {color.ENDC}...")
+
+    result: SearchItemPaged[dict] = client.search(
+        search_text=text,
+        include_total_count=True,
+        highlight_fields="ReviewText",
+        query_type="simple",
+        scoring_statistics="global")
+
+    print(f"results number: {result.get_count()}")
+
+    print_search_result(result)
+
+
+
+
+
 def semantic_search(client: SearchClient,
                     text: str):
 
     print(f"Applied semantic search with the query {color.OKCYAN} {text} {color.ENDC}...")
-    print(color.ENDC)
 
     result: SearchItemPaged[dict] = client.search(
         search_text=text,
-        # semantic_query=text,
+        semantic_query=text,
         include_total_count=True,
         highlight_fields="ReviewText",
         query_type="semantic",
         semantic_configuration_name="my_semantic_configuration",
-        scoring_statistics = "global",
-        )
+        scoring_statistics = "global")
 
     print(f"results number: {result.get_count()}")
 
@@ -50,6 +67,7 @@ def all_terms_are_present(client: SearchClient,
 
     print(f"results number: {result.get_count()}")
     print_search_result(result)
+
 
 #does not go to an analyzer
 def proximity_search(client: SearchClient):
@@ -84,7 +102,7 @@ def entire_phrase_occurrence(client: SearchClient, text: str):
 
 def filter_by_field(client: SearchClient, filter: str, query: str):
 
-    print(f"Applied search with the query {color.OKCYAN} {query} and filter {filter} {color.ENDC}...")
+    print(f"Applied search with the query {color.OKCYAN} {query} {color.ENDC} and filter {color.OKCYAN} {filter} {color.ENDC}...")
 
     print(color.ENDC)
 

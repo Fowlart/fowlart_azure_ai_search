@@ -1,9 +1,10 @@
 from operator import index
 from subprocess import Popen, PIPE
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
-from azure.search.documents.indexes._generated.models import SearchFieldDataType, CorsOptions, ScoringProfile
+from azure.search.documents.indexes._generated.models import SearchFieldDataType, CorsOptions, ScoringProfile, \
+    StopwordsTokenFilter, PatternReplaceCharFilter
 from azure.search.documents.indexes.models import (
     SemanticSearch,
     SimpleField,
@@ -14,7 +15,7 @@ from azure.search.documents.indexes.models import (
     LexicalTokenizer,
     TokenFilter,
     CharFilter,
-    AnalyzeTextOptions)
+    AnalyzeTextOptions, PatternTokenizer, CustomAnalyzer)
 
 class bcolors:
     HEADER = '\033[95m'
@@ -44,7 +45,7 @@ def _get_search_service_key()->str:
     return result
 
 
-def _get_search_index_client() -> SearchIndexClient:
+def get_search_index_client() -> SearchIndexClient:
     service_endpoint = "https://fowlart-ai-search.search.windows.net"
     key = _get_search_service_key()
     return SearchIndexClient(service_endpoint, AzureKeyCredential(key))
@@ -70,7 +71,7 @@ def create_an_index(
         semantic_search: Optional[SemanticSearch] = None
 ) -> SearchIndex:
 
-    search_index_client: SearchIndexClient = _get_search_index_client()
+    search_index_client: SearchIndexClient = get_search_index_client()
 
     cors_options = CorsOptions(allowed_origins=["*"], max_age_in_seconds=60)
 
@@ -97,7 +98,7 @@ def create_an_index(
 
 def analyze_text(text:str, analyzer_name: str, index_name: str):
 
-    client: SearchIndexClient = _get_search_index_client()
+    client: SearchIndexClient = get_search_index_client()
 
     print(f"{bcolors.OKGREEN} text: {text} \n {bcolors.OKCYAN}analyzer: {analyzer_name} {bcolors.ENDC}")
 
@@ -110,3 +111,18 @@ def analyze_text(text:str, analyzer_name: str, index_name: str):
         print(_elem)
 
     pass
+
+def get_custom_analyzer() -> Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer]:
+
+    pattern_tokenizer = PatternTokenizer(pattern=r"\W+", name="my_pattern_tokenizer")
+
+    token_filter = StopwordsTokenFilter(name="my_token_filter", stopwords=["Dog", "Cat", "Pig"], ignore_case=True)
+
+    char_filter = PatternReplaceCharFilter(name="my_char_filter", pattern=r"=n=", replacement="<new_line>")
+
+    my_custom_analyzer = CustomAnalyzer(name="my_custom_analyzer",
+                                        tokenizer_name="my_pattern_tokenizer",
+                                        token_filters=["my_token_filter"],
+                                        char_filters=["my_char_filter"])
+
+    return pattern_tokenizer,token_filter,char_filter, my_custom_analyzer
