@@ -30,7 +30,7 @@ class bcolors:
 
 def _get_search_service_key()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\scripts_win_ps\\get_api_key.ps1']
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\scripts_power_shell\\get_api_key.ps1']
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
     while True:
