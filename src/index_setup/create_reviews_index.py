@@ -75,12 +75,10 @@ if __name__ == "__main__":
 
 
     # add custom analyzers
-
     my_custom_lucene_analyzer = LuceneStandardAnalyzer(
         name="funny_standard_lucene",
         max_token_length=255,
         stopwords=["dog","pig","cat"])
-
 
     pattern_tokenizer = PatternTokenizer(pattern=r"\W+",name="my_pattern_tokenizer")
     token_filter = StopwordsTokenFilter(name="my_token_filter", stopwords=["Dog","Cat","Pig"],ignore_case=True)
@@ -93,21 +91,15 @@ if __name__ == "__main__":
                                         char_filters=["my_char_filter"])
 
 
-
-
-
-
     # semantic search
     semantic_content_field = SemanticField(field_name="ReviewText")
-
     semantic_prioritized_fields = SemanticPrioritizedFields(content_fields=[semantic_content_field])
-
 
     semantic_configuration = SemanticConfiguration(name="my_semantic_configuration",
                                                    prioritized_fields=semantic_prioritized_fields)
-
     my_semantic_search = SemanticSearch(default_configuration_name="my_semantic_configuration",
                                         configurations=[semantic_configuration])
+
 
 
     create_an_index("fowlart_product_review_hybrid",
