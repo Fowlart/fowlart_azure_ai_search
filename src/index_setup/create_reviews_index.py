@@ -3,14 +3,14 @@ from typing import List, Tuple
 from azure.search.documents.indexes.models import (ComplexField,
                                                    TokenFilter,
                                                    CharFilter,
-                                                   SimpleField,
-                                                   SearchFieldDataType,
-                                                   SearchableField,
-                                                   LuceneStandardAnalyzer,
                                                    CustomAnalyzer,
                                                    PatternTokenizer,
                                                    StopwordsTokenFilter,
                                                    PatternReplaceCharFilter,
+                                                   SimpleField,
+                                                   SearchFieldDataType,
+                                                   SearchableField,
+                                                   LuceneStandardAnalyzer,
                                                    SemanticSearch,
                                                    SemanticConfiguration,
                                                    SemanticPrioritizedFields,
@@ -46,7 +46,8 @@ if __name__ == "__main__":
                         filterable=False,
                         sortable=False,
                         facetable=True,
-                        analyzer_name="funny_standard_lucene")
+                        # analyzer_name="funny_standard_lucene"
+                        )
     ]
 
 
@@ -72,7 +73,5 @@ if __name__ == "__main__":
 
     create_an_index("fowlart_product_review_hybrid",
                     fields,
-
-                    [my_custom_lucene_analyzer],
-
+                    #[my_custom_lucene_analyzer],
                     semantic_search=my_semantic_search)

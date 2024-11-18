@@ -102,8 +102,7 @@ def analyze_text(text:str, analyzer_name: str, index_name: str):
 
     print(f"{bcolors.OKGREEN} text: {text} \n {bcolors.OKCYAN}analyzer: {analyzer_name} {bcolors.ENDC}")
 
-    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,
-                                                analyzer_name=analyzer_name)
+    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,analyzer_name=analyzer_name)
 
     resp: dict[str] = client.analyze_text(index_name, op).as_dict()
 

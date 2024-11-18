@@ -6,6 +6,16 @@ from src.utils.common_utils import bcolors as color
 
 
 def print_search_result(search_result_iterator):
+
+    if search_result_iterator.get_answers():
+        print(f"{color.HEADER}Found direct answers:{color.ENDC}")
+        print(color.OKGREEN)
+        for answ in search_result_iterator.get_answers():
+            print(answ)
+    else:
+        print("No answer results!")
+    print(color.ENDC)
+
     for x in search_result_iterator:
         print(f"{color.HEADER}Search result:{color.ENDC}")
         print(color.OKCYAN)
@@ -19,14 +29,7 @@ def print_search_result(search_result_iterator):
                 print(color.ENDC)
 
 
-        if search_result_iterator.get_answers():
-            print(f"{color.HEADER}Found direct answers:{color.ENDC}")
-            print(color.OKGREEN)
-            for answ in search_result_iterator.get_answers():
-                print(answ)
-        else:
-            print("No answer results!")
-        print(color.ENDC)
+
 
 
 def simple_search(client: SearchClient, text: str):
