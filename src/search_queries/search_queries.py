@@ -1,17 +1,35 @@
 from azure.search.documents import SearchClient, SearchItemPaged
+from azure.search.documents.models import QueryCaptionType, QueryAnswerType
+
 from src.utils.common_utils import get_search_client
 from src.utils.common_utils import bcolors as color
-import json
 
-def print_search_result(iterator):
-    for x in iterator:
+
+def print_search_result(search_result_iterator):
+    for x in search_result_iterator:
+        print(f"{color.HEADER}Search result:{color.ENDC}")
         print(color.OKCYAN)
-        print(json.dumps(x,indent=3))
+        print(x)
+        print(color.ENDC)
+        if x.get('@search.captions'):
+            print(f"{color.HEADER}Caption from semantic search results:{color.ENDC}")
+            for caption in x.get('@search.captions'):
+                print(color.OKGREEN)
+                print(caption)
+                print(color.ENDC)
+
+
+        if search_result_iterator.get_answers():
+            print(f"{color.HEADER}Found direct answers:{color.ENDC}")
+            print(color.OKGREEN)
+            for answ in search_result_iterator.get_answers():
+                print(answ)
+        else:
+            print("No answer results!")
         print(color.ENDC)
 
 
 def simple_search(client: SearchClient, text: str):
-
     print(f"Applied simple search with the query {color.OKCYAN} {text} {color.ENDC}...")
 
     result: SearchItemPaged[dict] = client.search(
@@ -26,12 +44,8 @@ def simple_search(client: SearchClient, text: str):
     print_search_result(result)
 
 
-
-
-
 def semantic_search(client: SearchClient,
                     text: str):
-
     print(f"Applied semantic search with the query {color.OKCYAN} {text} {color.ENDC}...")
 
     result: SearchItemPaged[dict] = client.search(
@@ -41,19 +55,22 @@ def semantic_search(client: SearchClient,
         highlight_fields="ReviewText",
         query_type="semantic",
         semantic_configuration_name="my_semantic_configuration",
-        scoring_statistics = "global")
+        scoring_statistics="global",
+        query_caption=QueryCaptionType.EXTRACTIVE,
+        query_answer=QueryAnswerType.EXTRACTIVE
+
+    )
 
     print(f"results number: {result.get_count()}")
 
     print_search_result(result)
 
 
-
-#goes to analyzer
+# goes to analyzer
 def all_terms_are_present(client: SearchClient,
                           terms: list[str]):
     search_prefix = "ReviewText:"
-    modified_terms =[search_prefix+s for s in terms]
+    modified_terms = [search_prefix + s for s in terms]
     full_search_query = " AND ".join(modified_terms)
     print(f"Applied search with the query {color.OKCYAN} {full_search_query} {color.ENDC}...")
     print(color.ENDC)
@@ -63,13 +80,13 @@ def all_terms_are_present(client: SearchClient,
         highlight_fields="ReviewText",
         search_mode="all",
         query_type="full",
-        scoring_statistics = "global")
+        scoring_statistics="global")
 
     print(f"results number: {result.get_count()}")
     print_search_result(result)
 
 
-#does not go to an analyzer
+# does not go to an analyzer
 def proximity_search(client: SearchClient):
     query = f'ReviewText: "long adhesion"~7'
     print(f"Applied search with the query {color.OKCYAN} {query} {color.ENDC}...")
@@ -85,9 +102,8 @@ def proximity_search(client: SearchClient):
     print_search_result(result)
 
 
-#does not go to an analyzer 
+# does not go to an analyzer
 def entire_phrase_occurrence(client: SearchClient, text: str):
-
     query = f'ReviewText: "{text}"'
     print(f"Applied search with the query {color.OKCYAN} {query} {color.ENDC}...")
     print(color.ENDC)
@@ -100,9 +116,10 @@ def entire_phrase_occurrence(client: SearchClient, text: str):
     print(f"results number: {result.get_count()}")
     print_search_result(result)
 
-def filter_by_field(client: SearchClient, filter: str, query: str):
 
-    print(f"Applied search with the query {color.OKCYAN} {query} {color.ENDC} and filter {color.OKCYAN} {filter} {color.ENDC}...")
+def filter_by_field(client: SearchClient, filter: str, query: str):
+    print(
+        f"Applied search with the query {color.OKCYAN} {query} {color.ENDC} and filter {color.OKCYAN} {filter} {color.ENDC}...")
 
     print(color.ENDC)
 
@@ -122,7 +139,6 @@ def filter_by_field(client: SearchClient, filter: str, query: str):
 
 
 if __name__ == "__main__":
-
     client: SearchClient = get_search_client("fowlart_product_review_hybrid")
 
     # entire_phrase_occurrence(client,"library cards and lunch")
@@ -141,4 +157,4 @@ if __name__ == "__main__":
 
     # filter_by_field(client=client, filter="ReviewRating eq 3", query="*")
 
-    semantic_search(client,"ultrasound pictures and sonogram keeping")
+    semantic_search(client, "ultrasound pictures and sonogram keeping")
