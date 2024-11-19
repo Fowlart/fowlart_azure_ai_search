@@ -29,7 +29,27 @@ def print_search_result(search_result_iterator):
                 print(color.ENDC)
 
 
+# goes to analyzer
+def search_by_key_phrases(client: SearchClient,
+                          key_phrases: list[str]):
 
+
+
+    quoted_key_phrases = [f"'{e}'" for e in key_phrases]
+    full_search_query = " ".join(quoted_key_phrases)
+    full_search_query = f"KeyPhrases:({full_search_query})"
+
+    print(f"Applied search with the query {color.OKCYAN} {full_search_query} {color.ENDC}...")
+    print(color.ENDC)
+    result: SearchItemPaged[dict] = client.search(
+        search_text=full_search_query,
+        include_total_count=True,
+        search_mode="any",
+        query_type="full",
+        scoring_statistics="global")
+
+    print(f"results number: {result.get_count()}")
+    print_search_result(result)
 
 
 def simple_search(client: SearchClient, text: str):

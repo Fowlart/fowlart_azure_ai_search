@@ -47,7 +47,16 @@ if __name__ == "__main__":
                         sortable=False,
                         facetable=True,
                         # analyzer_name="funny_standard_lucene"
-                        )
+                        ),
+
+        SearchableField(name="KeyPhrases",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=False,
+                        facetable=True,
+                        collection=True)
     ]
 
 
@@ -60,10 +69,15 @@ if __name__ == "__main__":
     # semantic search
     semantic_content_field = SemanticField(field_name="ReviewText")
 
-    semantic_prioritized_fields = SemanticPrioritizedFields(content_fields=[semantic_content_field])
+    semantic_key_phrases_field = SemanticField(field_name="KeyPhrases")
+
+    semantic_prioritized_fields = SemanticPrioritizedFields(
+        content_fields=[semantic_content_field],
+        keywords_fields=[semantic_key_phrases_field])
 
     semantic_configuration = SemanticConfiguration(name="my_semantic_configuration",
                                                    prioritized_fields=semantic_prioritized_fields)
+
     my_semantic_search = SemanticSearch(default_configuration_name="my_semantic_configuration",
                                         configurations=[semantic_configuration])
 

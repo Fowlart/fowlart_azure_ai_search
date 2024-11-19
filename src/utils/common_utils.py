@@ -28,10 +28,25 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def _get_language_service_key()->str:
+    result = ""
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\language_service_api_key.ps1']
+    proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_language_service_key.__name__} {bcolors.ENDC}")
+    while True:
+        line = proc.stdout.readline()
+        if line != b'':
+            the_line = line.decode("utf-8").strip()
+            if "key is>" in the_line:
+                result = the_line.split(">")[-1]
+        else:
+            break
+    return result
+
 
 def _get_search_service_key()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\scripts_power_shell\\get_api_key.ps1']
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\ai_service_api_key.ps1']
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
     while True:
