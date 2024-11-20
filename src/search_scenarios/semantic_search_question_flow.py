@@ -4,7 +4,7 @@ from src.utils.common_utils import analyze_text, get_search_client
 if __name__=="__main__":
 
     prompt = """
-    What is the recommendation for the teachers?
+    What is the recommendation for the teacher?
     """
 
     search_client = get_search_client("fowlart_product_review_hybrid")
@@ -13,4 +13,4 @@ if __name__=="__main__":
                  analyzer_name="standard.lucene",
                  index_name="fowlart_product_review_hybrid")
 
-    semantic_search(get_search_client("fowlart_product_review_hybrid"), prompt)
+    semantic_search(search_client, prompt)
