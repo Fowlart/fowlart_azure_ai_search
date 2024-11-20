@@ -1,7 +1,6 @@
 from operator import index
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
-from azure.core.credentials import AzureKeyCredential
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
 from azure.search.documents.indexes._generated.models import SearchFieldDataType, CorsOptions, ScoringProfile, \
     StopwordsTokenFilter, PatternReplaceCharFilter
@@ -16,6 +15,8 @@ from azure.search.documents.indexes.models import (
     TokenFilter,
     CharFilter,
     AnalyzeTextOptions, PatternTokenizer, CustomAnalyzer)
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
 
 class bcolors:
     HEADER = '\033[95m'
@@ -74,6 +75,13 @@ def get_search_client(index_name: str = None) -> SearchClient:
     return SearchClient(endpoint=service_endpoint,
                                           credential=AzureKeyCredential(key),
                                           index_name=index_name)
+
+def authenticate_text_analytics_client():
+    ta_credential = AzureKeyCredential(_get_language_service_key())
+    text_analytics_client = TextAnalyticsClient(
+        endpoint=r"https://fowlart-language-service.cognitiveservices.azure.com/",
+        credential=ta_credential)
+    return text_analytics_client
 
 
 def create_an_index(

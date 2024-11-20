@@ -1,17 +1,17 @@
 import polars as pl
-from polars.expr import string as s
+from azure.search.documents.indexes._search_index_client import SearchClient
 
 from analyze_text.extract_key_phrases import key_phrase_extraction
 from src.utils.common_utils import get_search_client
+from utils.common_utils import authenticate_text_analytics_client
 
-def _update_to_index(data: list[dict]):
 
-    client = get_search_client("fowlart_product_review_hybrid")
+def _update_to_index(data: list[dict], searchClient: SearchClient):
 
     for doc in data:
         print(doc)
 
-    upload_results = client.upload_documents(data)
+    upload_results = searchClient.upload_documents(data)
 
     for result in upload_results:
         print(result)
@@ -37,6 +37,9 @@ if __name__ == "__main__":
 
     print(f"Number of reviews: {len(jsons)}")
 
+    text_analytics_client = authenticate_text_analytics_client()
+    search_client = get_search_client("fowlart_product_review_hybrid")
+
     for x in jsons:
-        x["KeyPhrases"]=key_phrase_extraction(x["ReviewText"])
-        _update_to_index([x])
+        x["KeyPhrases"]=key_phrase_extraction(x["ReviewText"],text_analytics_client)
+        _update_to_index([x],search_client)

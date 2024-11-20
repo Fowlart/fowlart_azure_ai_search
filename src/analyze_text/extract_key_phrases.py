@@ -1,21 +1,9 @@
-from azure.ai.textanalytics import TextAnalyticsClient
-from azure.core.credentials import AzureKeyCredential
-from src.utils.common_utils import _get_language_service_key
-
-
-# Authenticate the client using your key and endpoint
-def authenticate_client():
-    ta_credential = AzureKeyCredential(_get_language_service_key())
-    text_analytics_client = TextAnalyticsClient(
-        endpoint=r"https://fowlart-language-service.cognitiveservices.azure.com/",
-        credential=ta_credential)
-    return text_analytics_client
+from azure.ai.textanalytics.aio import TextAnalyticsClient
+from src.utils.common_utils import authenticate_text_analytics_client
 
 
 
-def key_phrase_extraction(text: str) -> list[str]:
-
-    client = authenticate_client()
+def key_phrase_extraction(text: str, client: TextAnalyticsClient) -> list[str]:
 
     result = []
 
@@ -39,6 +27,6 @@ def key_phrase_extraction(text: str) -> list[str]:
 if __name__ == "__main__":
 
    result = key_phrase_extraction("Key phrase extraction works best when you give it bigger amounts of text to work on. This is opposite from sentiment analysis, which performs better on smaller amounts of text. "
-                                  "To get the best results from both operations, consider restructuring the inputs accordingly.")
+                                  "To get the best results from both operations, consider restructuring the inputs accordingly.",authenticate_text_analytics_client())
 
    print(result)
