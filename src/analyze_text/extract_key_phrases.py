@@ -2,7 +2,6 @@ from azure.ai.textanalytics.aio import TextAnalyticsClient
 from src.utils.common_utils import authenticate_text_analytics_client
 
 
-
 def key_phrase_extraction(text: str, client: TextAnalyticsClient) -> list[str]:
 
     result = []
