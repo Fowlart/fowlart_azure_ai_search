@@ -7,6 +7,7 @@ from azure.search.documents.indexes._generated.models import SearchFieldDataType
 from azure.search.documents.indexes.models import (
     SemanticSearch,
     SimpleField,
+    VectorSearch,
     SearchableField,
     ComplexField,
     SearchIndex,
@@ -91,7 +92,8 @@ def create_an_index(
         tokenizer: Optional[List[LexicalTokenizer]] = None,
         t_filter: Optional[List[TokenFilter]] = None,
         ch_filters: Optional[List[CharFilter]] = None,
-        semantic_search: Optional[SemanticSearch] = None
+        semantic_search: Optional[SemanticSearch] = None,
+        vector_search: Optional[VectorSearch] = None
 ) -> SearchIndex:
 
     search_index_client: SearchIndexClient = get_search_index_client()
@@ -108,7 +110,8 @@ def create_an_index(
                         tokenizers=tokenizer,
                         token_filters=t_filter,
                         char_filters=ch_filters,
-                        semantic_search=semantic_search
+                        semantic_search=semantic_search,
+                        vector_search=vector_search
                         )
 
     result: SearchIndex = search_index_client.create_index(index)

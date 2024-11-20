@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+from azure.search.documents.indexes._generated.models import WebApiVectorizer, HnswAlgorithmConfiguration
 from azure.search.documents.indexes.models import (ComplexField,
                                                    TokenFilter,
                                                    CharFilter,
@@ -12,6 +13,14 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    SearchableField,
                                                    LuceneStandardAnalyzer,
                                                    SemanticSearch,
+
+                                                   VectorSearch,
+                                                   VectorSearchProfile,
+                                                   VectorSearchAlgorithmConfiguration,
+                                                   VectorSearchVectorizer,
+                                                   WebApiVectorizerParameters,
+
+
                                                    SemanticConfiguration,
                                                    SemanticPrioritizedFields,
                                                    SemanticField)
@@ -56,9 +65,46 @@ if __name__ == "__main__":
                         filterable=False,
                         sortable=False,
                         facetable=True,
-                        collection=True)
+                        collection=True),
+
+        SearchableField(
+            name="ReviewTextVectorized",
+            searchable=True,
+            retrievable = True,
+            type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+            vector_search_profile_name = "my-VectorSearch-profile",
+            vector_search_dimensions = 1536,
+            vector_search_configuration_name = "my-VectorSearch-algorithm-config"
+
+        )
     ]
 
+    # vectorSearch
+    web_api_params = WebApiVectorizerParameters(
+        url="https://rivne-piano.com/",
+        http_method="POST",
+        http_headers={}
+    )
+
+    vector_search_vectorizer = WebApiVectorizer(
+        vectorizer_name="my-vectorizer",
+        web_api_parameters = web_api_params
+    )
+
+    vector_algorythm_config = HnswAlgorithmConfiguration(
+        name="my-VectorSearch-algorithm-config"
+    )
+
+    vector_search_profile = VectorSearchProfile(
+        name="my-VectorSearch-profile",
+        algorithm_configuration_name="my-VectorSearch-algorithm-config",
+        vectorizer_name="my-vectorizer")
+
+    my_vector_search = VectorSearch(
+        profiles=[vector_search_profile],
+        algorithms=[vector_algorythm_config],
+        vectorizers=[vector_search_vectorizer]
+    )
 
     # add custom analyzers
     my_custom_lucene_analyzer = LuceneStandardAnalyzer(
@@ -88,4 +134,5 @@ if __name__ == "__main__":
     create_an_index("fowlart_product_review_hybrid",
                     fields,
                     #[my_custom_lucene_analyzer],
-                    semantic_search=my_semantic_search)
+                    semantic_search=my_semantic_search,
+                    vector_search=my_vector_search)
