@@ -121,6 +121,11 @@ def create_an_index(
 
     return result
 
+def get_tokens(text:str, analyzer_name: str, index_name: str, client: SearchIndexClient) -> list[str]:
+    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,analyzer_name=analyzer_name)
+    resp: dict[str] = client.analyze_text(index_name, op).as_dict()
+    return [str(el["token"]) for el in resp.get("tokens")]
+
 
 def analyze_text(text:str, analyzer_name: str, index_name: str):
 
@@ -136,6 +141,25 @@ def analyze_text(text:str, analyzer_name: str, index_name: str):
         print(_elem)
 
     pass
+
+def key_phrase_extraction(text: str, client: TextAnalyticsClient) -> list[str]:
+
+    result = []
+
+    try:
+        documents = [text]
+
+        response = client.extract_key_phrases(documents=documents)[0]
+
+        if not response.is_error:
+            result = response.key_phrases
+        else:
+            print(response.id, response.error)
+
+    except Exception as err:
+        print("Encountered exception. {}".format(err))
+
+    return result
 
 def get_custom_analyzer() -> Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer]:
 

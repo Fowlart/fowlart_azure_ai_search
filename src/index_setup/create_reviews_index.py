@@ -25,7 +25,7 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    SemanticPrioritizedFields,
                                                    SemanticField)
 
-from src.utils.common_utils import create_an_index, get_custom_analyzer
+from src.utils.common_utils import create_an_index
 
 if __name__ == "__main__":
 

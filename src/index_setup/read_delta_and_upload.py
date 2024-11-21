@@ -1,8 +1,6 @@
 import polars as pl
 from azure.search.documents.indexes._search_index_client import SearchClient
-
-from analyze_text.extract_key_phrases import key_phrase_extraction
-from src.utils.common_utils import get_search_client
+from src.utils.common_utils import get_search_client, key_phrase_extraction
 from utils.common_utils import authenticate_text_analytics_client
 
 
@@ -20,7 +18,8 @@ def _update_to_index(data: list[dict], searchClient: SearchClient):
 if __name__ == "__main__":
 
     df = (pl.read_delta(source=r'C:\Users\Artur.Semikov'
-                               r'\PycharmProjects\FowlartAiSearch\resources\733d79e5-b388-4186-94de-146127ae7a61'))
+                               r'\PycharmProjects\FowlartAiSearch'
+                               r'\resources\733d79e5-b388-4186-94de-146127ae7a61'))
 
     print(df.collect_schema())
 
@@ -38,6 +37,7 @@ if __name__ == "__main__":
     print(f"Number of reviews: {len(jsons)}")
 
     text_analytics_client = authenticate_text_analytics_client()
+
     search_client = get_search_client("fowlart_product_review_hybrid")
 
     for x in jsons:
