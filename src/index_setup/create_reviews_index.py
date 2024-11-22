@@ -20,10 +20,9 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    VectorSearchVectorizer,
                                                    WebApiVectorizerParameters,
 
-
                                                    SemanticConfiguration,
                                                    SemanticPrioritizedFields,
-                                                   SemanticField)
+                                                   SemanticField, SearchIndex, SearchField)
 
 from src.utils.common_utils import create_an_index
 
@@ -67,15 +66,13 @@ if __name__ == "__main__":
                         facetable=True,
                         collection=True),
 
-        SearchableField(
-            name="ReviewTextVectorized",
-            searchable=True,
-            retrievable = True,
-            type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
-            vector_search_profile_name = "my-VectorSearch-profile",
-            vector_search_dimensions = 1536,
-            vector_search_configuration_name = "my-VectorSearch-algorithm-config"
 
+        SearchField(
+            name="ReviewTextVector",
+            collection=True,
+            type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+            vector_search_dimensions = 300,
+            vector_search_profile_name= "my-VectorSearch-profile"
         )
     ]
 
@@ -131,7 +128,7 @@ if __name__ == "__main__":
     # custom_analyzer: Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer] = get_custom_analyzer()
 
 
-    create_an_index("fowlart_product_review_hybrid",
+    index: SearchIndex = create_an_index("fowlart_product_review_hybrid",
                     fields,
                     #[my_custom_lucene_analyzer],
                     semantic_search=my_semantic_search,

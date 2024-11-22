@@ -3,14 +3,13 @@ import gensim.models
 
 if __name__=="__main__":
 
-    my_corp = ReviewsCorpus()
+    my_corp = ReviewsCorpus(number_of_records=1000,minimal_review_length=100)
 
     model = gensim.models.Word2Vec(
         sentences=my_corp,
-        vector_size=100,
-        workers=10)
+        vector_size=1000)
 
-    model_path = r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model.txt"
+    model_path = r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"
 
     model.save(model_path)
 

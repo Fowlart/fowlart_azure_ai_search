@@ -98,6 +98,7 @@ def create_an_index(
 
     search_index_client: SearchIndexClient = get_search_index_client()
 
+
     cors_options = CorsOptions(allowed_origins=["*"], max_age_in_seconds=60)
 
     scoring_profiles: List[ScoringProfile] = []
@@ -111,7 +112,8 @@ def create_an_index(
                         token_filters=t_filter,
                         char_filters=ch_filters,
                         semantic_search=semantic_search,
-                        vector_search=vector_search
+                        vector_search=vector_search,
+                        fields_definition =""
                         )
 
     result: SearchIndex = search_index_client.create_index(index)
