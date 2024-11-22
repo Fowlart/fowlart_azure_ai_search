@@ -7,7 +7,7 @@ if __name__=="__main__":
 
     model = gensim.models.Word2Vec(
         sentences=my_corp,
-        vector_size=1000)
+        vector_size=300)
 
     model_path = r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"
 
