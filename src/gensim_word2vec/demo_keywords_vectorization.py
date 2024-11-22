@@ -1,7 +1,6 @@
 import gensim.downloader as api
 import polars as pl
-from analyze_text.extract_key_phrases import key_phrase_extraction
-from utils.common_utils import authenticate_text_analytics_client
+from utils.common_utils import authenticate_text_analytics_client, key_phrase_extraction
 from src.utils.common_utils import bcolors as c
 
 if __name__ =="__main__":

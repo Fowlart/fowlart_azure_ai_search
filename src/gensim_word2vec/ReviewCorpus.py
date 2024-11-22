@@ -1,11 +1,30 @@
-from gensim.test.utils import datapath
-from gensim import utils
+import polars as pl
+from src.utils.common_utils import get_tokens, get_search_index_client
 
-class ReviewCorpus:
+
+class ReviewsCorpus:
     """An iterator that yields sentences (lists of str)."""
 
-    def __iter__(self) -> list[str]:
-        corpus_path = datapath('lee_background.cor')
-        for line in open(corpus_path):
-            # assume there's one document per line, tokens separated by whitespace
-            yield utils.simple_preprocess(line)
+    def __iter__(self):
+
+        df = (pl.read_delta(source=r'C:\Users\Artur.Semikov'
+                                   r'\PycharmProjects\FowlartAiSearch'
+                                   r'\resources\733d79e5-b388-4186-94de-146127ae7a61'))
+
+        jsons: list[dict] = (df
+                             .head(300)
+                             .select("review_text")
+                             .filter(pl.col("review_text").str.len_chars() > 100)
+                             .to_dicts())
+
+
+        for element in jsons:
+            text = element["review_text"]
+            print(f"Tokenizing: {text} ")
+            result = get_tokens(text=text,
+                             analyzer_name="en.microsoft",
+                             index_name="fowlart_product_review_hybrid",
+                             client=get_search_index_client())
+            print(f"Result is: {result}")
+
+            yield result
