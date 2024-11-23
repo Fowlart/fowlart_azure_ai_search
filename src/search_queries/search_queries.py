@@ -1,5 +1,6 @@
 from azure.search.documents import SearchClient, SearchItemPaged
-from azure.search.documents.models import QueryCaptionType, QueryAnswerType
+from azure.search.documents.models import QueryCaptionType, QueryAnswerType, VectorizedQuery
+from oauthlib.uri_validate import query
 
 from src.utils.common_utils import get_search_client
 from src.utils.common_utils import bcolors as color
@@ -29,11 +30,24 @@ def print_search_result(search_result_iterator):
                 print(color.ENDC)
 
 
+def vector_search(client: SearchClient,
+                  vector: list[float]):
+
+    v_query = VectorizedQuery(
+        fields="ReviewTextVector",
+        exhaustive = False,
+        k_nearest_neighbors=2,
+        vector = vector)
+
+    result = client.search(vector_queries=[v_query])
+
+    print(f"results number: {result.get_count()}")
+
+    print_search_result(result)
+
 # goes to analyzer
 def search_by_key_phrases(client: SearchClient,
                           key_phrases: list[str]):
-
-
 
     quoted_key_phrases = [f"'{e}'" for e in key_phrases]
     full_search_query = " ".join(quoted_key_phrases)

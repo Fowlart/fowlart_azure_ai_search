@@ -4,17 +4,16 @@ from azure.search.documents.indexes._search_index_client import SearchClient
 from src.utils.common_utils import get_search_client, key_phrase_extraction, get_search_index_client
 from utils.common_utils import authenticate_text_analytics_client, analyze_text, get_tokens
 import gensim
-import gensim.downloader as api
 import numpy as np
 from src.utils.common_utils import bcolors as c
 
 
-def _update_to_index(data: list[dict], searchClient: SearchClient):
+def _update_to_index(data: list[dict], s_client: SearchClient):
 
     for doc in data:
         print(doc)
 
-    upload_results = searchClient.upload_documents(data)
+    upload_results = s_client.upload_documents(data)
 
     for result in upload_results:
         print(result)
@@ -50,10 +49,13 @@ if __name__ == "__main__":
     trained_model = gensim.models.Word2Vec.load(r"C:\Users"
                                                 r"\Artur.Semikov"
                                                 r"\PycharmProjects"
-                                                r"\FowlartAiSearch\resources\gensim-models\main-model.txt").wv
+                                                r"\FowlartAiSearch"
+                                                r"\resources"
+                                                r"\gensim-models"
+                                                r"\main-model-l.txt").wv
 
-
-    trained_model = api.load('word2vec-google-news-300')
+    # todo: decide, what model is more effective
+    # trained_model = api.load('word2vec-google-news-300')
 
     search_index_client = get_search_index_client()
 
@@ -64,10 +66,12 @@ if __name__ == "__main__":
 
         x["KeyPhrases"]= key_phrases
 
-        # Average of Word2Vec vectors : You can just take the average of all the word vectors in a sentence.
+        # Average of Word2Vec vectors :
+        # You can just take the average of all the word vectors in a sentence.
         # This average vector will represent your sentence vector.
 
-        review_tokens = get_tokens(x["ReviewText"],analyzer_name="en.microsoft",
+        review_tokens = get_tokens(x["ReviewText"],
+                             analyzer_name="en.microsoft",
                              index_name="fowlart_product_review_hybrid",
                              client=search_index_client)
 
