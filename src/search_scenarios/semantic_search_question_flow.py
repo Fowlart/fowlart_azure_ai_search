@@ -7,7 +7,7 @@ if __name__=="__main__":
     What is the recommendation for the teacher?
     """
 
-    search_client = get_search_client("fowlart_product_review_hybrid")
+    search_client = get_search_client()
 
     analyze_text(text=prompt,
                  analyzer_name="standard.lucene",

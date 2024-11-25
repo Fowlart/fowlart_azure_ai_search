@@ -1,8 +1,8 @@
 import numpy
 import polars as pl
 from azure.search.documents.indexes._search_index_client import SearchClient
-from src.utils.common_utils import get_search_client, key_phrase_extraction, get_search_index_client
-from utils.common_utils import authenticate_text_analytics_client, analyze_text, get_tokens
+from src.utils.common_utils import get_search_client, extract_key_phrases, get_search_index_client
+from utils.common_utils import get_text_analytics_client, analyze_text, get_tokens
 import gensim
 import numpy as np
 from src.utils.common_utils import bcolors as c
@@ -40,9 +40,9 @@ if __name__ == "__main__":
 
     print(f"Number of reviews: {len(jsons)}")
 
-    text_analytics_client = authenticate_text_analytics_client()
+    text_analytics_client = get_text_analytics_client()
 
-    search_client = get_search_client("fowlart_product_review_hybrid")
+    search_client = get_search_client()
 
 
 
@@ -62,13 +62,9 @@ if __name__ == "__main__":
     # will mutate the original jsons
     for x in jsons:
 
-        key_phrases = key_phrase_extraction(x["ReviewText"],text_analytics_client)
+        key_phrases = extract_key_phrases(x["ReviewText"], text_analytics_client)
 
         x["KeyPhrases"]= key_phrases
-
-        # Average of Word2Vec vectors :
-        # You can just take the average of all the word vectors in a sentence.
-        # This average vector will represent your sentence vector.
 
         review_tokens = get_tokens(x["ReviewText"],
                              analyzer_name="en.microsoft",
@@ -85,6 +81,10 @@ if __name__ == "__main__":
              print(f"The token `{token}` does not appear in this model")
              print(c.ENDC)
 
+        # Average of Word2Vec vectors :
+        # You can just take the average
+        # of all the word vectors in a sentence.
+        # This average vector will represent your sentence vector.
         average_vector: np.ndarray = np.mean(sentence_vector_list, axis=0)
 
         print(f"Created vector for review with the shape {average_vector.shape}")

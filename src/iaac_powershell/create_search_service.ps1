@@ -1,1 +1,1 @@
-az search service create --name fowlart-ai-search --resource-group rg-fowlartChat --sku basic
+xaz search service create --name fowlart-ai-search --resource-group rg-fowlartChat --sku basic

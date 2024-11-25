@@ -1,13 +1,13 @@
 import gensim.downloader as api
 import polars as pl
-from utils.common_utils import authenticate_text_analytics_client, key_phrase_extraction
+from utils.common_utils import get_text_analytics_client, extract_key_phrases
 from src.utils.common_utils import bcolors as c
 
 if __name__ =="__main__":
 
     wv = api.load('word2vec-google-news-300')
 
-    text_analytics_client = authenticate_text_analytics_client()
+    text_analytics_client = get_text_analytics_client()
 
     jsons: list[dict] = (pl.read_delta(source=r'C:\Users\Artur.Semikov'
                                r'\PycharmProjects\FowlartAiSearch'
@@ -19,7 +19,7 @@ if __name__ =="__main__":
 
     for x in jsons:
 
-        keyPhrases = key_phrase_extraction(x["review_text"],text_analytics_client)
+        keyPhrases = extract_key_phrases(x["review_text"], text_analytics_client)
         print(f"Analyzed key-phrases list: {keyPhrases}")
         for w in keyPhrases:
             print(f"Finding vector for `{w}`")

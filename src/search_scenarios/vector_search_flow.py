@@ -1,20 +1,30 @@
-from utils.common_utils import get_search_client, get_search_index_client
+from utils.common_utils import get_search_client, get_search_index_client, extract_key_phrases
 from search_queries.search_queries import vector_search
 from gensim_word2vec import gensim_util as gu
+from utils.common_utils import get_text_analytics_client
 
 
 if __name__=="__main__":
 
-    prompt = """DIY bookmarks"""
+    prompt = """Scotch tape for small repair"""
 
-    search_client = get_search_client("fowlart_product_review_hybrid")
+    search_client = get_search_client()
 
     search_index_client = get_search_index_client()
 
-    vector = gu.get_vector_from_sentence(text=prompt, search_index_client= search_index_client)
+    text_analytics_client = get_text_analytics_client()
 
-    vector_search(client=search_client, vector=vector)
+    key_phrases = extract_key_phrases(prompt,text_analytics_client)
 
+    key_phrases_prompt = " ".join(key_phrases)
 
+    vector = gu.get_vector_from_sentence(
+        text=key_phrases_prompt,
+        search_index_client= search_index_client)
+
+    vector_search(client=search_client,
+                  vector=vector,
+                  exhaustive_search=True,
+                  k_nearest_neighbors=4)
 
 

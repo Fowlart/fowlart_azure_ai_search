@@ -1,6 +1,5 @@
 from azure.search.documents import SearchClient, SearchItemPaged
 from azure.search.documents.models import QueryCaptionType, QueryAnswerType, VectorizedQuery
-from oauthlib.uri_validate import query
 
 from src.utils.common_utils import get_search_client
 from src.utils.common_utils import bcolors as color
@@ -31,17 +30,17 @@ def print_search_result(search_result_iterator):
 
 
 def vector_search(client: SearchClient,
-                  vector: list[float]):
+                  vector: list[float],
+                  exhaustive_search: bool = False,
+                  k_nearest_neighbors: int = 3):
 
     v_query = VectorizedQuery(
         fields="ReviewTextVector",
-        exhaustive = False,
-        k_nearest_neighbors=2,
+        exhaustive = exhaustive_search,
+        k_nearest_neighbors=k_nearest_neighbors,
         vector = vector)
 
-    result = client.search(vector_queries=[v_query])
-
-    print(f"results number: {result.get_count()}")
+    result: SearchItemPaged[dict] = client.search(vector_queries=[v_query])
 
     print_search_result(result)
 
@@ -176,7 +175,8 @@ def filter_by_field(client: SearchClient, filter: str, query: str):
 
 
 if __name__ == "__main__":
-    client: SearchClient = get_search_client("fowlart_product_review_hybrid")
+
+    client: SearchClient = get_search_client()
 
     # entire_phrase_occurrence(client,"library cards and lunch")
 

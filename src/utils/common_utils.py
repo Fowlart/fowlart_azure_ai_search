@@ -30,6 +30,9 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def _get_index_name()->str:
+    return "fowlart_product_review_hybrid"
+
 def _get_language_service_key()->str:
     result = ""
     cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\language_service_api_key.ps1']
@@ -68,16 +71,16 @@ def get_search_index_client() -> SearchIndexClient:
     return SearchIndexClient(service_endpoint, AzureKeyCredential(key))
 
 
-def get_search_client(index_name: str = None) -> SearchClient:
+def get_search_client() -> SearchClient:
     service_endpoint = "https://fowlart-ai-search.search.windows.net"
 
     key = _get_search_service_key()
 
     return SearchClient(endpoint=service_endpoint,
                                           credential=AzureKeyCredential(key),
-                                          index_name=index_name)
+                                          index_name=_get_index_name())
 
-def authenticate_text_analytics_client():
+def get_text_analytics_client():
     ta_credential = AzureKeyCredential(_get_language_service_key())
     text_analytics_client = TextAnalyticsClient(
         endpoint=r"https://fowlart-language-service.cognitiveservices.azure.com/",
@@ -144,7 +147,7 @@ def analyze_text(text:str, analyzer_name: str, index_name: str):
 
     pass
 
-def key_phrase_extraction(text: str, client: TextAnalyticsClient) -> list[str]:
+def extract_key_phrases(text: str, client: TextAnalyticsClient) -> list[str]:
 
     result = []
 
