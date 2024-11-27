@@ -1,6 +1,8 @@
 from src.gensim_word2vec.ReviewCorpus import ReviewsCorpus
 import gensim.models
 
+from utils.common_utils import get_path_to_gensim_model
+
 if __name__=="__main__":
 
     my_corp = ReviewsCorpus(number_of_records=1000,minimal_review_length=100)
@@ -9,8 +11,6 @@ if __name__=="__main__":
         sentences=my_corp,
         vector_size=300)
 
-    model_path = r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"
+    model.save(get_path_to_gensim_model())
 
-    model.save(model_path)
-
-    print(f"Training finalized! Model was saved at {model_path}")
+    print(f"Training finalized! Model was saved at {get_path_to_gensim_model()}")

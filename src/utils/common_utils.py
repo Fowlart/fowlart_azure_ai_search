@@ -30,7 +30,15 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def _get_index_name()->str:
+def get_path_to_gensim_model() -> str:
+
+    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"
+
+def get_path_to_example_data() -> str:
+
+    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\733d79e5-b388-4186-94de-146127ae7a61"
+
+def get_index_name()->str:
     return "fowlart_product_review_hybrid"
 
 def _get_language_service_key()->str:
@@ -77,8 +85,8 @@ def get_search_client() -> SearchClient:
     key = _get_search_service_key()
 
     return SearchClient(endpoint=service_endpoint,
-                                          credential=AzureKeyCredential(key),
-                                          index_name=_get_index_name())
+                        credential=AzureKeyCredential(key),
+                        index_name=get_index_name())
 
 def get_text_analytics_client():
     ta_credential = AzureKeyCredential(_get_language_service_key())

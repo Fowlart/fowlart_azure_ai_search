@@ -1,6 +1,6 @@
 import gensim.downloader as api
 import polars as pl
-from utils.common_utils import get_text_analytics_client, extract_key_phrases
+from utils.common_utils import get_text_analytics_client, extract_key_phrases, get_path_to_example_data
 from src.utils.common_utils import bcolors as c
 
 if __name__ =="__main__":
@@ -9,9 +9,7 @@ if __name__ =="__main__":
 
     text_analytics_client = get_text_analytics_client()
 
-    jsons: list[dict] = (pl.read_delta(source=r'C:\Users\Artur.Semikov'
-                               r'\PycharmProjects\FowlartAiSearch'
-                               r'\resources\733d79e5-b388-4186-94de-146127ae7a61')
+    jsons: list[dict] = (pl.read_delta(source=get_path_to_example_data())
                          .head(100)
                          .select("review_id", "review_rating", "review_text")
                          .filter(pl.col("review_text").str.len_chars() > 100)

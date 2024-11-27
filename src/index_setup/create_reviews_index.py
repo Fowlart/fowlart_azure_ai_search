@@ -24,7 +24,7 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    SemanticPrioritizedFields,
                                                    SemanticField, SearchIndex, SearchField)
 
-from src.utils.common_utils import create_an_index
+from src.utils.common_utils import create_an_index, get_index_name
 
 if __name__ == "__main__":
 
@@ -128,8 +128,9 @@ if __name__ == "__main__":
     # custom_analyzer: Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer] = get_custom_analyzer()
 
 
-    index: SearchIndex = create_an_index("fowlart_product_review_hybrid",
-                    fields,
+    index: SearchIndex = create_an_index(
+                    index_name=get_index_name(),
+                    fields_definition=fields,
                     #[my_custom_lucene_analyzer],
                     semantic_search=my_semantic_search,
                     vector_search=my_vector_search)

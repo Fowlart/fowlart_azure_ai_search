@@ -1,5 +1,5 @@
 from azure.search.documents.indexes import SearchIndexClient
-from utils.common_utils import get_tokens, bcolors as c
+from utils.common_utils import get_tokens, bcolors as c, get_index_name, get_path_to_gensim_model
 import gensim
 import numpy as np
 
@@ -10,16 +10,10 @@ def get_vector_from_sentence(text: str,
 
     tokens = get_tokens(text,
                                analyzer_name="en.microsoft",
-                               index_name="fowlart_product_review_hybrid",
+                               index_name=get_index_name(),
                                client=search_index_client)
 
-    trained_model = gensim.models.Word2Vec.load(r"C:\Users"
-                                                r"\Artur.Semikov"
-                                                r"\PycharmProjects"
-                                                r"\FowlartAiSearch"
-                                                r"\resources"
-                                                r"\gensim-models"
-                                                r"\main-model-l.txt").wv
+    trained_model = gensim.models.Word2Vec.load(get_path_to_gensim_model()).wv
 
     sentence_vector_list: list[np.ndarray] = []
 

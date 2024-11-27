@@ -1,5 +1,6 @@
 from search_queries import all_terms_are_present, semantic_search, filter_by_field, simple_search
 from src.utils.common_utils import analyze_text, get_search_client
+from utils.common_utils import get_index_name
 
 if __name__=="__main__":
 
@@ -11,6 +12,6 @@ if __name__=="__main__":
 
     analyze_text(text=prompt,
                  analyzer_name="standard.lucene",
-                 index_name="fowlart_product_review_hybrid")
+                 index_name=get_index_name())
 
     semantic_search(search_client, prompt)

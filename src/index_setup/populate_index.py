@@ -1,8 +1,9 @@
 import numpy
 import polars as pl
 from azure.search.documents.indexes._search_index_client import SearchClient
-from src.utils.common_utils import get_search_client, extract_key_phrases, get_search_index_client
-from utils.common_utils import get_text_analytics_client, analyze_text, get_tokens
+from src.utils.common_utils import get_search_client, extract_key_phrases, get_search_index_client, \
+    get_path_to_gensim_model, get_path_to_example_data
+from utils.common_utils import get_text_analytics_client, analyze_text, get_tokens, get_index_name
 import gensim
 import numpy as np
 from src.utils.common_utils import bcolors as c
@@ -21,9 +22,7 @@ def _update_to_index(data: list[dict], s_client: SearchClient):
 
 if __name__ == "__main__":
 
-    df = (pl.read_delta(source=r'C:\Users\Artur.Semikov'
-                               r'\PycharmProjects\FowlartAiSearch'
-                               r'\resources\733d79e5-b388-4186-94de-146127ae7a61'))
+    df = (pl.read_delta(source=get_path_to_example_data()))
 
     print(df.collect_schema())
 
@@ -46,13 +45,7 @@ if __name__ == "__main__":
 
 
 
-    trained_model = gensim.models.Word2Vec.load(r"C:\Users"
-                                                r"\Artur.Semikov"
-                                                r"\PycharmProjects"
-                                                r"\FowlartAiSearch"
-                                                r"\resources"
-                                                r"\gensim-models"
-                                                r"\main-model-l.txt").wv
+    trained_model = gensim.models.Word2Vec.load(get_path_to_gensim_model()).wv
 
     # todo: decide, what model is more effective
     # trained_model = api.load('word2vec-google-news-300')
@@ -68,7 +61,7 @@ if __name__ == "__main__":
 
         review_tokens = get_tokens(x["ReviewText"],
                              analyzer_name="en.microsoft",
-                             index_name="fowlart_product_review_hybrid",
+                             index_name=get_index_name(),
                              client=search_index_client)
 
         sentence_vector_list: list[numpy.ndarray] = []
