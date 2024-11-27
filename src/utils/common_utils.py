@@ -41,6 +41,9 @@ def get_path_to_example_data() -> str:
 def get_index_name()->str:
     return "fowlart_product_review_hybrid"
 
+def get_ai_search_endpoint() -> str:
+    return f"https://fowlart-ai-search.search.windows.net"
+
 def _get_language_service_key()->str:
     result = ""
     cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\language_service_api_key.ps1']
@@ -74,13 +77,13 @@ def _get_search_service_key()->str:
 
 
 def get_search_index_client() -> SearchIndexClient:
-    service_endpoint = "https://fowlart-ai-search.search.windows.net"
+    service_endpoint = get_ai_search_endpoint()
     key = _get_search_service_key()
     return SearchIndexClient(service_endpoint, AzureKeyCredential(key))
 
 
 def get_search_client() -> SearchClient:
-    service_endpoint = "https://fowlart-ai-search.search.windows.net"
+    service_endpoint = get_ai_search_endpoint()
 
     key = _get_search_service_key()
 
