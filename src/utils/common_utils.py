@@ -39,9 +39,11 @@ def get_path_to_example_data() -> str:
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\733d79e5-b388-4186-94de-146127ae7a61"
 
 def get_index_name()->str:
+
     return "fowlart_product_review_hybrid"
 
 def get_ai_search_endpoint() -> str:
+
     return f"https://fowlart-ai-search.search.windows.net"
 
 def _get_language_service_key()->str:
