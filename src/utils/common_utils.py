@@ -2,8 +2,11 @@ from operator import index
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
-from azure.search.documents.indexes._generated.models import SearchFieldDataType, CorsOptions, ScoringProfile, \
-    StopwordsTokenFilter, PatternReplaceCharFilter
+from azure.search.documents.indexes._generated.models import (CorsOptions,
+                                                              ScoringProfile,
+                                                              StopwordsTokenFilter,
+                                                              PatternReplaceCharFilter,
+                                                              SearchSuggester)
 from azure.search.documents.indexes.models import (
     SemanticSearch,
     SimpleField,
@@ -100,6 +103,22 @@ def get_text_analytics_client():
         credential=ta_credential)
     return text_analytics_client
 
+def get_query_key() -> str:
+    result = ""
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\query_key.ps1']
+    proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
+    while True:
+        line = proc.stdout.readline()
+        if line != b'':
+            the_line = line.decode("utf-8").strip()
+            if "key is>" in the_line:
+                result = the_line.split(">")[-1]
+        else:
+            break
+    return result
+
+
 
 def create_an_index(
         index_name: str,
@@ -109,7 +128,8 @@ def create_an_index(
         t_filter: Optional[List[TokenFilter]] = None,
         ch_filters: Optional[List[CharFilter]] = None,
         semantic_search: Optional[SemanticSearch] = None,
-        vector_search: Optional[VectorSearch] = None
+        vector_search: Optional[VectorSearch] = None,
+        suggester: Optional[SearchSuggester] = None
 ) -> SearchIndex:
 
     search_index_client: SearchIndexClient = get_search_index_client()
@@ -129,7 +149,8 @@ def create_an_index(
                         char_filters=ch_filters,
                         semantic_search=semantic_search,
                         vector_search=vector_search,
-                        fields_definition =""
+                        fields_definition ="",
+                        suggesters=[suggester]
                         )
 
     result: SearchIndex = search_index_client.create_index(index)
