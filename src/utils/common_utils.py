@@ -1,6 +1,8 @@
 from operator import index
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
+
+from azure.search.documents.indexes import SearchIndexerClient
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
 from azure.search.documents.indexes._generated.models import (CorsOptions,
                                                               ScoringProfile,
@@ -83,6 +85,26 @@ def _get_search_service_key()->str:
         else:
             break
     return result
+
+def _get_storage_account_connection_string()->str:
+    result = ""
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\get_storage_account_connection_string.ps1']
+    proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
+    while True:
+        line = proc.stdout.readline()
+        if line != b'':
+            the_line = line.decode("utf-8").strip()
+            if "connectionString is>" in the_line:
+                result = the_line.split(">")[-1]
+        else:
+            break
+    return result
+
+def get_search_indexer_client()-> SearchIndexerClient:
+    service_endpoint = get_ai_search_endpoint()
+    key = _get_search_service_key()
+    return SearchIndexerClient(service_endpoint, AzureKeyCredential(key))
 
 
 def get_search_index_client() -> SearchIndexClient:

@@ -61,7 +61,6 @@ if __name__ == "__main__":
                         sorted=True),
 
 
-
         SearchableField(name="ReviewText",
                         type=SearchFieldDataType.String,
                         searchable = True,
@@ -91,7 +90,7 @@ if __name__ == "__main__":
     ]
 
     # vectorSearch
-    web_api_params = WebApiVectorizerParameters(
+    web_api_params_stub = WebApiVectorizerParameters(
         url="https://rivne-piano.com/",
         http_method="POST",
         http_headers={}
@@ -99,7 +98,7 @@ if __name__ == "__main__":
 
     vector_search_vectorizer = WebApiVectorizer(
         vectorizer_name="my-vectorizer",
-        web_api_parameters = web_api_params
+        web_api_parameters = web_api_params_stub
     )
 
     vector_algorythm_config = HnswAlgorithmConfiguration(

@@ -1,0 +1,144 @@
+from re import search
+from typing import List
+
+from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
+
+from src.utils.common_utils import create_an_index, _get_storage_account_connection_string, get_search_indexer_client
+
+from azure.search.documents.indexes.models import (SearchableField,
+                                                   SearchFieldDataType,
+                                                   SimpleField,
+                                                   SearchField,
+                                                   VectorSearch,
+                                                   WebApiVectorizerParameters,
+                                                   WebApiVectorizer,
+                                                   HnswAlgorithmConfiguration,
+                                                   VectorSearchProfile,
+                                                   SearchIndexerDataContainer,
+                                                   SearchIndexerDataSourceConnection,
+                                                   SearchIndexer)
+
+def get_fields_definition() -> List[SearchableField]:
+    result: List[SearchableField] = [
+
+        SimpleField(
+            name="id",
+            searchable=False,
+            retrievable=True,
+            type=SearchFieldDataType.String,
+            key=True),
+
+        SearchableField(name="content_type",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="key_phrases",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=False,
+                        facetable=True,
+                        collection=True),
+
+        SearchableField(name="language",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=True,
+                        sortable=False,
+                        facetable=True),
+
+        # The main purpose of a custom search app is to return a link to the actual file
+        SearchableField(name="url",
+                        type=SearchFieldDataType.String,
+                        searchable=False,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=False,
+                        facetable=True),
+
+        # This field might be the essence of the search app.
+        # My content is unstructured data.To find a match within
+        # unstructured data we need to vectorize the content.
+        SearchField(
+            name="vectorized_content",
+            collection=True,
+            type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+            vector_search_dimensions=1000,
+            vector_search_profile_name="my-VectorSearch-profile"
+        )]
+
+    return result
+
+def get_vector_search_configuration() -> VectorSearch:
+
+    web_api_params_stub = WebApiVectorizerParameters(
+        url="https://rivne-piano.com/",
+        http_method="POST",
+        http_headers={}
+    )
+
+    vector_search_vectorizer = WebApiVectorizer(
+        vectorizer_name="my-vectorizer",
+        web_api_parameters=web_api_params_stub
+    )
+
+    vector_algorythm_config = HnswAlgorithmConfiguration(
+        name="my-VectorSearch-algorithm-config"
+    )
+
+    vector_search_profile = VectorSearchProfile(
+        name="my-VectorSearch-profile",
+        algorithm_configuration_name="my-VectorSearch-algorithm-config",
+        vectorizer_name="my-vectorizer")
+
+    my_vector_search = VectorSearch(
+        profiles=[vector_search_profile],
+        algorithms=[vector_algorythm_config],
+        vectorizers=[vector_search_vectorizer]
+    )
+
+    return  my_vector_search
+
+
+if __name__ == "__main__":
+
+    personal_index_name = "fowlart_personal_index"
+
+    fields: List[SearchableField] = get_fields_definition()
+
+    vector_search_config: VectorSearch = get_vector_search_configuration()
+
+    #create_an_index(personal_index_name,fields_definition=fields,vector_search=vector_search_config)
+
+    print(f"storage account cs: {_get_storage_account_connection_string()}")
+
+    search_indexer_client: SearchIndexerClient = get_search_indexer_client()
+
+    # [START create_indexer]
+    # create a datasource
+    container = SearchIndexerDataContainer(name="content")
+
+    data_source_connection = SearchIndexerDataSourceConnection(
+        name="indexer-datasource",
+        type="azureblob",
+        connection_string=_get_storage_account_connection_string(),
+        container=container
+    )
+
+    data_source = search_indexer_client.create_data_source_connection(data_source_connection)
+
+    # create an indexer
+    indexer = SearchIndexer(
+        name="sample-indexer",
+        data_source_name="indexer-datasource",
+        target_index_name=personal_index_name
+    )
+    result = search_indexer_client.create_indexer(indexer)
+    print("Create new Indexer - sample-indexer")
+    # [END create_indexer]
