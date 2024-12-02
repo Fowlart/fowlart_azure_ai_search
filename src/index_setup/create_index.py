@@ -41,6 +41,16 @@ if __name__ == "__main__":
             type=SearchFieldDataType.String,
             key=True),
 
+        SearchableField(name="ProductTitle",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=False,
+                        facetable=True,
+                        # analyzer_name="funny_standard_lucene"
+                        ),
+
         SimpleField(name="ReviewRating",
                         type = SearchFieldDataType.Int32,
                         searchable=False,
@@ -49,6 +59,8 @@ if __name__ == "__main__":
                         sortable=True,
                         facetable=True,
                         sorted=True),
+
+
 
         SearchableField(name="ReviewText",
                         type=SearchFieldDataType.String,
@@ -128,9 +140,13 @@ if __name__ == "__main__":
 
     # custom_analyzer: Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer] = get_custom_analyzer()
 
+
     # adding suggester
-    suggester: SearchSuggester = SearchSuggester(name="keywords_suggester",
+    keywords_suggester: SearchSuggester = SearchSuggester(name="keywords_suggester",
                                                  source_fields=["KeyPhrases"])
+
+    title_suggester: SearchSuggester = SearchSuggester(name="title_suggester",
+                                                          source_fields=["ProductTitle"])
 
     index: SearchIndex = create_an_index(
                     index_name=get_index_name(),
@@ -138,5 +154,5 @@ if __name__ == "__main__":
                     #[my_custom_lucene_analyzer],
                     semantic_search=my_semantic_search,
                     vector_search=my_vector_search,
-                    suggester=suggester)
+                    suggesters=[title_suggester])
 

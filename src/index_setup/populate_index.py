@@ -29,9 +29,10 @@ if __name__ == "__main__":
 
     jsons: list[dict] = (df
                          .head(100)
-                         .select("review_id","review_rating","review_text")
+                         .select("review_id","review_rating","review_text","product_title")
                          .filter(pl.col("review_text").str.len_chars()>100)
                          .rename({"review_id":"id",
+                                  "product_title": "ProductTitle",
                                   "review_rating":"ReviewRating",
                                   "review_text":"ReviewText"})
                          .cast({"ReviewRating":pl.Int32})
@@ -42,7 +43,6 @@ if __name__ == "__main__":
     text_analytics_client = get_text_analytics_client()
 
     search_client = get_search_client()
-
 
 
     trained_model = gensim.models.Word2Vec.load(get_path_to_gensim_model()).wv

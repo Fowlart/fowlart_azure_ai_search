@@ -39,7 +39,11 @@ def get_path_to_gensim_model() -> str:
 
 def get_path_to_example_data() -> str:
 
-    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\733d79e5-b388-4186-94de-146127ae7a61"
+    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\data\fdfa65de-5a85-4422-b7f6-5c03e8e4a317"
+
+def get_html_template_folder_path() -> str:
+
+    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\static-html"
 
 def get_index_name()->str:
 
@@ -129,7 +133,7 @@ def create_an_index(
         ch_filters: Optional[List[CharFilter]] = None,
         semantic_search: Optional[SemanticSearch] = None,
         vector_search: Optional[VectorSearch] = None,
-        suggester: Optional[SearchSuggester] = None
+        suggesters: Optional[list[SearchSuggester]] = None
 ) -> SearchIndex:
 
     search_index_client: SearchIndexClient = get_search_index_client()
@@ -150,7 +154,7 @@ def create_an_index(
                         semantic_search=semantic_search,
                         vector_search=vector_search,
                         fields_definition ="",
-                        suggesters=[suggester]
+                        suggesters=suggesters
                         )
 
     result: SearchIndex = search_index_client.create_index(index)
