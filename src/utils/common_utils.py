@@ -179,7 +179,7 @@ def create_an_index(
                         suggesters=suggesters
                         )
 
-    result: SearchIndex = search_index_client.create_index(index)
+    result: SearchIndex = search_index_client.create_or_update_index(index)
 
     if isinstance(result, SearchIndex):
         print(f"{bcolors.OKGREEN} Index with name {result.name} was created {bcolors.ENDC}")

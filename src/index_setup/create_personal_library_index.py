@@ -1,7 +1,11 @@
+from operator import index
 from re import search
 from typing import List
 
 from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
+from numpy.array_api.setup import configuration
+
+from azure.search.documents.indexes.models import BlobIndexerParsingMode, BlobIndexerImageAction
 
 from src.utils.common_utils import create_an_index, _get_storage_account_connection_string, get_search_indexer_client
 
@@ -16,23 +20,58 @@ from azure.search.documents.indexes.models import (SearchableField,
                                                    VectorSearchProfile,
                                                    SearchIndexerDataContainer,
                                                    SearchIndexerDataSourceConnection,
-                                                   SearchIndexer)
+                                                   SearchIndexer,
+                                                   IndexingParameters,
+                                                   BlobIndexerDataToExtract,
+                                                   IndexingParametersConfiguration)
 
 def get_fields_definition() -> List[SearchableField]:
-    result: List[SearchableField] = [
 
-        SimpleField(
-            name="id",
-            searchable=False,
-            retrievable=True,
-            type=SearchFieldDataType.String,
-            key=True),
+    fields_definition: List[SearchableField] = [
 
-        SearchableField(name="content_type",
+        SimpleField(name="id",
+                    searchable=False,
+                    retrievable=True,
+                    type=SearchFieldDataType.String,
+                    key=True),
+
+        SearchableField(name="content",
                         type=SearchFieldDataType.String,
                         searchable=True,
                         retrievable=True,
                         filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_storage_content_type",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_storage_path",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=True,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_storage_last_modified",
+                        type=SearchFieldDataType.DateTimeOffset,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=True,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_storage_size",
+                        type=SearchFieldDataType.Int64,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=True,
                         sortable=True,
                         facetable=True),
 
@@ -65,15 +104,17 @@ def get_fields_definition() -> List[SearchableField]:
         # This field might be the essence of the search app.
         # My content is unstructured data.To find a match within
         # unstructured data we need to vectorize the content.
-        SearchField(
-            name="vectorized_content",
-            collection=True,
-            type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
-            vector_search_dimensions=1000,
-            vector_search_profile_name="my-VectorSearch-profile"
-        )]
 
-    return result
+        # SearchField(
+        #     name="vectorized_content",
+        #     collection=True,
+        #     type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+        #     vector_search_dimensions=1000,
+        #     vector_search_profile_name="my-VectorSearch-profile"
+        # )
+        ]
+
+    return fields_definition
 
 def get_vector_search_configuration() -> VectorSearch:
 
@@ -114,9 +155,7 @@ if __name__ == "__main__":
 
     vector_search_config: VectorSearch = get_vector_search_configuration()
 
-    #create_an_index(personal_index_name,fields_definition=fields,vector_search=vector_search_config)
-
-    print(f"storage account cs: {_get_storage_account_connection_string()}")
+    create_an_index(personal_index_name,fields_definition=fields)
 
     search_indexer_client: SearchIndexerClient = get_search_indexer_client()
 
@@ -125,20 +164,31 @@ if __name__ == "__main__":
     container = SearchIndexerDataContainer(name="content")
 
     data_source_connection = SearchIndexerDataSourceConnection(
-        name="indexer-datasource",
+        name="fowlartaisearchstore",
         type="azureblob",
         connection_string=_get_storage_account_connection_string(),
-        container=container
+        container=container)
+
+    data_source = search_indexer_client.create_or_update_data_source_connection(data_source_connection)
+
+    index_params_config = IndexingParametersConfiguration(
+        parsing_mode=BlobIndexerParsingMode.DEFAULT,
+        image_action = BlobIndexerImageAction.NONE,
+        data_to_extract = BlobIndexerDataToExtract.CONTENT_AND_METADATA,
+        allow_skillset_to_read_file_data=True,
+        excluded_file_name_extensions="jpg"
+
     )
 
-    data_source = search_indexer_client.create_data_source_connection(data_source_connection)
+    indexing_params = IndexingParameters(index_params_config = index_params_config)
 
     # create an indexer
     indexer = SearchIndexer(
-        name="sample-indexer",
-        data_source_name="indexer-datasource",
-        target_index_name=personal_index_name
-    )
-    result = search_indexer_client.create_indexer(indexer)
-    print("Create new Indexer - sample-indexer")
+        name="fowlart-indexer",
+        data_source_name="fowlartaisearchstore",
+        target_index_name=personal_index_name)
+
+    result = search_indexer_client.create_or_update_indexer(indexer)
+
+    print(f"Created new indexer: {indexer.name}")
     # [END create_indexer]
