@@ -3,7 +3,6 @@ from re import search
 from typing import List
 
 from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
-from numpy.array_api.setup import configuration
 
 from azure.search.documents.indexes.models import BlobIndexerParsingMode, BlobIndexerImageAction
 
@@ -25,6 +24,20 @@ from azure.search.documents.indexes.models import (SearchableField,
                                                    BlobIndexerDataToExtract,
                                                    IndexingParametersConfiguration)
 
+def create_update_data_source() -> SearchIndexerDataSourceConnection:
+
+    container = SearchIndexerDataContainer(name="content")
+
+    data_source_connection = SearchIndexerDataSourceConnection(
+        name="fowlartaisearchstore",
+        type="azureblob",
+        connection_string=_get_storage_account_connection_string(),
+        container=container)
+
+    data_source: SearchIndexerDataSourceConnection = search_indexer_client.create_or_update_data_source_connection(data_source_connection)
+
+    return data_source
+
 def get_fields_definition() -> List[SearchableField]:
 
     fields_definition: List[SearchableField] = [
@@ -44,6 +57,46 @@ def get_fields_definition() -> List[SearchableField]:
                         facetable=True),
 
         SearchableField(name="metadata_storage_content_type",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_title",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_author",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_language",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_page_count",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=True,
+                        facetable=True),
+
+        SearchableField(name="metadata_word_count",
                         type=SearchFieldDataType.String,
                         searchable=True,
                         retrievable=True,
@@ -147,46 +200,40 @@ def get_vector_search_configuration() -> VectorSearch:
     return  my_vector_search
 
 
+def get_index_configuration() -> IndexingParameters:
+    index_params_config: IndexingParametersConfiguration = IndexingParametersConfiguration(
+        query_timeout=None,
+        parsing_mode=BlobIndexerParsingMode.DEFAULT,
+        image_action=BlobIndexerImageAction.NONE,
+        data_to_extract=BlobIndexerDataToExtract.CONTENT_AND_METADATA,
+        allow_skillset_to_read_file_data=False,
+        indexed_file_name_extensions=".pdf, .docx")
+
+    indexing_params = IndexingParameters(configuration=index_params_config)
+
+    return indexing_params
+
+
 if __name__ == "__main__":
 
     personal_index_name = "fowlart_personal_index"
+
+    indexer_name = "fowlart-indexer"
 
     fields: List[SearchableField] = get_fields_definition()
 
     vector_search_config: VectorSearch = get_vector_search_configuration()
 
-    create_an_index(personal_index_name,fields_definition=fields)
+    create_an_index(personal_index_name, fields_definition=fields)
 
     search_indexer_client: SearchIndexerClient = get_search_indexer_client()
 
     # [START create_indexer]
-    # create a datasource
-    container = SearchIndexerDataContainer(name="content")
-
-    data_source_connection = SearchIndexerDataSourceConnection(
-        name="fowlartaisearchstore",
-        type="azureblob",
-        connection_string=_get_storage_account_connection_string(),
-        container=container)
-
-    data_source = search_indexer_client.create_or_update_data_source_connection(data_source_connection)
-
-    index_params_config = IndexingParametersConfiguration(
-        parsing_mode=BlobIndexerParsingMode.DEFAULT,
-        image_action = BlobIndexerImageAction.NONE,
-        data_to_extract = BlobIndexerDataToExtract.CONTENT_AND_METADATA,
-        allow_skillset_to_read_file_data=True,
-        excluded_file_name_extensions="jpg"
-
-    )
-
-    indexing_params = IndexingParameters(index_params_config = index_params_config)
-
-    # create an indexer
     indexer = SearchIndexer(
-        name="fowlart-indexer",
-        data_source_name="fowlartaisearchstore",
-        target_index_name=personal_index_name)
+        name=indexer_name,
+        data_source_name=create_update_data_source().name,
+        target_index_name=personal_index_name,
+        parameters = get_index_configuration())
 
     result = search_indexer_client.create_or_update_indexer(indexer)
 
