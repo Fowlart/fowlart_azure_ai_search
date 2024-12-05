@@ -44,7 +44,7 @@ def create_index_projections(index_name: str) -> SearchIndexerIndexProjection:
             SearchIndexerIndexProjectionSelector(
                 target_index_name=index_name,
                 parent_key_field_name="parent_id",
-                source_context="/document/pages",
+                source_context="/document/pages/*",
                 mappings=[InputFieldMappingEntry(name="chunked_page", source="/document/pages/*")])
                   ],
 
@@ -271,6 +271,7 @@ def create_skillset() -> SearchIndexerSkillset:
     client = get_search_indexer_client()
 
     input_field_text = InputFieldMappingEntry(name="text",source="/document/content")
+
     input_field_lang= InputFieldMappingEntry(name="languageCode",source="/document/metadata_language")
 
     output = OutputFieldMappingEntry(name="textItems",target_name="pages")
@@ -280,7 +281,7 @@ def create_skillset() -> SearchIndexerSkillset:
                    outputs=[output],
                    text_split_mode="pages",
                    default_language_code="en",
-                   maximum_pages_to_take=3,
+                   maximum_pages_to_take=6,
                    maximum_page_length=5000)
 
 
@@ -308,11 +309,9 @@ if __name__ == "__main__":
     search_indexer_client: SearchIndexerClient = get_search_indexer_client()
 
     output_field_mappings: List[FieldMapping] = [
-        FieldMapping(source_field_name="/document/pages", target_field_name="pages"),
-        #FieldMapping(source_field_name="/document/pages/*/chunk", target_field_name="chunked_page")
+        FieldMapping(source_field_name="/document/pages", target_field_name="pages")
     ]
 
-    # [START create_indexer]
     indexer = SearchIndexer(
         name=indexer_name,
         data_source_name=create_update_data_source().name,
@@ -323,5 +322,4 @@ if __name__ == "__main__":
 
     result = search_indexer_client.create_or_update_indexer(indexer)
 
-    print(f"Created/updated new indexer: {indexer.name}, date: {dt.datetime.now()}")
-    # [END create_indexer]
+    print(f"created/updated new indexer: {indexer.name}, date: {dt.datetime.now()}")
