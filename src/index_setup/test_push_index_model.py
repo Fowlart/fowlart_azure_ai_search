@@ -28,6 +28,7 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    SearchSuggester)
 
 from src.utils.common_utils import create_an_index, get_index_name
+from populate_index import populate_index
 
 if __name__ == "__main__":
 
@@ -154,4 +155,6 @@ if __name__ == "__main__":
                     semantic_search=my_semantic_search,
                     vector_search=my_vector_search,
                     suggesters=[title_suggester])
+
+    populate_index()
 

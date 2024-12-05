@@ -19,8 +19,7 @@ def _update_to_index(data: list[dict], s_client: SearchClient):
     for result in upload_results:
         print(result)
 
-
-if __name__ == "__main__":
+def populate_index() -> None:
 
     df = (pl.read_delta(source=get_path_to_example_data()))
 

@@ -2,7 +2,10 @@ from operator import index
 from re import search
 from typing import List
 
+import datetime as dt
+
 from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
+from azure.search.documents.indexes._generated.models import FieldMapping, SearchIndexerIndexProjection
 
 from azure.search.documents.indexes.models import BlobIndexerParsingMode, BlobIndexerImageAction
 
@@ -22,7 +25,33 @@ from azure.search.documents.indexes.models import (SearchableField,
                                                    SearchIndexer,
                                                    IndexingParameters,
                                                    BlobIndexerDataToExtract,
-                                                   IndexingParametersConfiguration)
+                                                   IndexingParametersConfiguration,
+                                                   InputFieldMappingEntry,
+                                                   OutputFieldMappingEntry,
+                                                   EntityRecognitionSkill,
+                                                   SearchIndexerSkillset,
+                                                   SplitSkill,
+                                                   ComplexField,
+                                                   SearchIndexerIndexProjectionSelector,
+                                                   SearchIndexerIndexProjectionsParameters,
+                                                   IndexProjectionMode)
+
+def create_index_projections(index_name: str) -> SearchIndexerIndexProjection:
+
+    index_projections = SearchIndexerIndexProjection(
+
+        selectors=[
+            SearchIndexerIndexProjectionSelector(
+                target_index_name=index_name,
+                parent_key_field_name="parent_id",
+                source_context="/document/pages",
+                mappings=[InputFieldMappingEntry(name="chunked_page", source="/document/pages/*")])
+                  ],
+
+        # parameters=SearchIndexerIndexProjectionsParameters(projection_mode=IndexProjectionMode.SKIP_INDEXING_PARENT_DOCUMENTS)
+    )
+
+    return index_projections
 
 def create_update_data_source() -> SearchIndexerDataSourceConnection:
 
@@ -42,11 +71,17 @@ def get_fields_definition() -> List[SearchableField]:
 
     fields_definition: List[SearchableField] = [
 
-        SimpleField(name="id",
-                    searchable=False,
-                    retrievable=True,
+        SearchField(name="document_id",
                     type=SearchFieldDataType.String,
-                    key=True),
+                    key=True,
+                    sortable=True,
+                    filterable=True,
+                    facetable=True,
+                    analyzer_name="keyword"),
+
+        SearchField(name="parent_id",
+                    type=SearchFieldDataType.String,
+                    filterable=True),
 
         SearchableField(name="content",
                         type=SearchFieldDataType.String,
@@ -54,6 +89,23 @@ def get_fields_definition() -> List[SearchableField]:
                         retrievable=True,
                         filterable=False,
                         sortable=True,
+                        facetable=True),
+
+        SearchableField(name="pages",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=False,
+                        facetable=True,
+                        collection=True),
+
+        SearchableField(name="chunked_page",
+                        type=SearchFieldDataType.String,
+                        searchable=True,
+                        retrievable=True,
+                        filterable=False,
+                        sortable=False,
                         facetable=True),
 
         SearchableField(name="metadata_storage_content_type",
@@ -214,9 +266,36 @@ def get_index_configuration() -> IndexingParameters:
     return indexing_params
 
 
+def create_skillset() -> SearchIndexerSkillset:
+
+    client = get_search_indexer_client()
+
+    input_field_text = InputFieldMappingEntry(name="text",source="/document/content")
+    input_field_lang= InputFieldMappingEntry(name="languageCode",source="/document/metadata_language")
+
+    output = OutputFieldMappingEntry(name="textItems",target_name="pages")
+
+    s = SplitSkill(name="split_skill",
+                   inputs=[input_field_text,input_field_lang],
+                   outputs=[output],
+                   text_split_mode="pages",
+                   default_language_code="en",
+                   maximum_pages_to_take=3,
+                   maximum_page_length=5000)
+
+
+    skillset: SearchIndexerSkillset = SearchIndexerSkillset(
+        name="fowlart-skillset",
+        skills=[s],
+        description="",
+        index_projection=create_index_projections(index_name=personal_index_name))
+
+    return client.create_or_update_skillset(skillset)
+
+
 if __name__ == "__main__":
 
-    personal_index_name = "fowlart_personal_index"
+    personal_index_name = "fowlart-personal-index"
 
     indexer_name = "fowlart-indexer"
 
@@ -228,14 +307,21 @@ if __name__ == "__main__":
 
     search_indexer_client: SearchIndexerClient = get_search_indexer_client()
 
+    output_field_mappings: List[FieldMapping] = [
+        FieldMapping(source_field_name="/document/pages", target_field_name="pages"),
+        #FieldMapping(source_field_name="/document/pages/*/chunk", target_field_name="chunked_page")
+    ]
+
     # [START create_indexer]
     indexer = SearchIndexer(
         name=indexer_name,
         data_source_name=create_update_data_source().name,
         target_index_name=personal_index_name,
-        parameters = get_index_configuration())
+        parameters = get_index_configuration(),
+        skillset_name=create_skillset().name,
+        output_field_mappings=output_field_mappings)
 
     result = search_indexer_client.create_or_update_indexer(indexer)
 
-    print(f"Created new indexer: {indexer.name}")
+    print(f"Created/updated new indexer: {indexer.name}, date: {dt.datetime.now()}")
     # [END create_indexer]
