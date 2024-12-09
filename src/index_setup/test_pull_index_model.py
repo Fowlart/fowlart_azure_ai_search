@@ -1,5 +1,3 @@
-from operator import index
-from re import search
 from typing import List
 
 import datetime as dt

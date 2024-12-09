@@ -207,14 +207,15 @@ def analyze_text(text:str, analyzer_name: str, index_name: str):
 
     pass
 
-def extract_key_phrases(text: str, client: TextAnalyticsClient) -> list[str]:
+def extract_key_phrases(text: str, client: TextAnalyticsClient, language: str = None) -> list[str]:
 
     result = []
 
     try:
         documents = [text]
 
-        response = client.extract_key_phrases(documents=documents)[0]
+        response = client.extract_key_phrases(documents=documents,
+                                              language = language)[0]
 
         if not response.is_error:
             result = response.key_phrases
