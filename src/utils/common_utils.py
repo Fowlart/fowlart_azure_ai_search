@@ -36,7 +36,7 @@ class bcolors:
 # Todo: refactor
 # [Local env: BEGIN]
 def get_path_to_audio_sample() -> str:
-    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\voice-records\sample 3.wav"
+    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\voice-records\sample_4.wav"
 
 def get_path_to_gensim_model() -> str:
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"

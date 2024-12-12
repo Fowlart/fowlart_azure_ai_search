@@ -13,8 +13,8 @@ def recognize_from_file():
 
     print("Starting...")
 
-    # todo: async-await usage
-    speech_recognition_result = speech_recognizer.recognize_once_async().get()
+    # todo: async-await usage: recognize_once_async()
+    speech_recognition_result = speech_recognizer.recognize_once()
 
     if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
         print("Recognized: {}".format(speech_recognition_result.text))
