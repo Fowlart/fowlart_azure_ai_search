@@ -11,10 +11,8 @@ from azure.search.documents.indexes._generated.models import (CorsOptions,
                                                               SearchSuggester)
 from azure.search.documents.indexes.models import (
     SemanticSearch,
-    SimpleField,
     VectorSearch,
     SearchableField,
-    ComplexField,
     SearchIndex,
     LexicalAnalyzer,
     LexicalTokenizer,
@@ -35,31 +33,34 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def get_path_to_gensim_model() -> str:
+# Todo: refactor
+# [Local env: BEGIN]
+def get_path_to_audio_sample() -> str:
+    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\voice-records\sample 3.wav"
 
+def get_path_to_gensim_model() -> str:
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"
 
 def get_path_to_example_data() -> str:
-
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\data\fdfa65de-5a85-4422-b7f6-5c03e8e4a317"
 
 def get_html_template_folder_path() -> str:
-
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\static-html"
 
 def get_index_name()->str:
-
     return "fowlart_product_review_hybrid"
 
 def get_ai_search_endpoint() -> str:
-
     return f"https://fowlart-ai-search.search.windows.net"
 
-def _get_language_service_key()->str:
+def get_language_service_endpoint() -> str:
+    return "https://fowlart-language-service.cognitiveservices.azure.com"
+
+def _get_speech_service_key()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\language_service_api_key.ps1']
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\speech_service_api_key.ps1']
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_language_service_key.__name__} {bcolors.ENDC}")
+    print(f"{bcolors.OKBLUE} Starting speech service key extraction {bcolors.ENDC}")
     while True:
         line = proc.stdout.readline()
         if line != b'':
@@ -70,12 +71,26 @@ def _get_language_service_key()->str:
             break
     return result
 
+def _get_language_service_key()->str:
+    result = ""
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\language_service_api_key.ps1']
+    proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    print(f"{bcolors.OKBLUE} Starting language service key extraction {bcolors.ENDC}")
+    while True:
+        line = proc.stdout.readline()
+        if line != b'':
+            the_line = line.decode("utf-8").strip()
+            if "key is>" in the_line:
+                result = the_line.split(">")[-1]
+        else:
+            break
+    return result
 
 def _get_search_service_key()->str:
     result = ""
     cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\ai_service_api_key.ps1']
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
+    print(f"{bcolors.OKBLUE} Starting search service key extraction {bcolors.ENDC}")
     while True:
         line = proc.stdout.readline()
         if line != b'':
@@ -101,6 +116,8 @@ def _get_storage_account_connection_string()->str:
             break
     return result
 
+# [Local env: END]
+
 def get_search_indexer_client()-> SearchIndexerClient:
     service_endpoint = get_ai_search_endpoint()
     key = _get_search_service_key()
@@ -125,7 +142,7 @@ def get_search_client() -> SearchClient:
 def get_text_analytics_client():
     ta_credential = AzureKeyCredential(_get_language_service_key())
     text_analytics_client = TextAnalyticsClient(
-        endpoint=r"https://fowlart-language-service.cognitiveservices.azure.com/",
+        endpoint=get_language_service_endpoint(),
         credential=ta_credential)
     return text_analytics_client
 
@@ -143,8 +160,6 @@ def get_query_key() -> str:
         else:
             break
     return result
-
-
 
 def create_an_index(
         index_name: str,
