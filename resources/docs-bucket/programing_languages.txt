@@ -1,0 +1,279 @@
+With hundreds of programming languages in use today, it can be daunting choosing which ones to learn when you’re new to tech.
+
+The good news is, programming languages aren’t like Pokemon — you don’t have to catch them all. You just need to know which ones are the most relevant to your field, are desirable among employers, and have median salaries that align with your personal career goals.
+
+To help, we’ve rounded up the top nine programming languages to learn in 2024 based on our Employer Survey, Outcomes Report, and the Stack Overflow 2023 Developer Survey. Let’s dive in.
+
+What is a programming language?
+A programming language is a set of instructions that lets humans communicate with computers and tell them to execute tasks. Like the natural languages that we speak or sign, programming languages have their own unique grammar, syntax, and structure.
+
+Unlike natural languages, though, mistakes and typos render programming languages unintelligible. Computers are consistent in reading and performing tasks, so even a single mistake (such as a missing closed parenthesis) can prevent code from executing.
+
+The two categories of programming languages
+High level
+
+Most commonUsed for software and web development
+Relatively easy for humans to read
+Harder for machines to understand and execute, requiring more time, resources, and a compiler
+Examples: JavaScript, Java, Pascal, PHP, Python
+
+Low level
+
+Tailored for computers
+Run fast
+Written primarily in binary form
+Used to execute very complex programsHarder for humans to understand and learn
+Examples: Assembly language, machine language
+
+A note about compilers: Languages like C++ use a compiler to convert sentences coders write into the binary form machines understand. Others like JavaScript have a built-in interpreter that allows programmers to translate commands and structures on the fly; these are simpler to use.
+
+The top programming languages
+In 2024, the best programming languages to learn are Python, JavaScript, SQL, Go, Rust, Java, C and C++, C#, and Swift. These nine technologies rank most popular with professional developers and learners alike, while also ranking high on top-paying technologies lists.
+
+1. Python
+
+Python is a well-known programming language used for a variety of tasks, including writing scripts, optimizing tasks, powering machine learning, engaging in web design, and more. It was created under an OSI-approved open source license, allowing it to be widely shared for commercial purposes.
+
+Reasons to learn Python:
+
+It has a syntax close to natural language, so it’s one of the easiest to start programming in. 
+It was designed to make it easier to work with databases and different kinds of machine-based test automation.
+It’s good for writing real-time code.
+You don't have to know much about coding, since it's written in simple syntax.
+It offers support for testing and integration with popular third-party libraries, such as pip and conda.
+Many different types of roles use Python, and these skills are in demand across industries.
+Job titles that use Python: 
+
+Python Developer, Data Analyst, Machine Learning Engineer, DevOps Engineer, Web Scraping Specialist
+
+Salary estimate with Python skills: 
+
+Python developers earn an average of $95,912 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty:  Low
+
+2. JavaScript
+
+JavaScript is a scripting language that primarily enables browsers to read and execute its code. Over 98% of sites across the web use JavaScript to run their client-side experiences. The language is also at the core of many top-demanded frameworks, like React.js and Vue.js.
+
+Reasons to learn JavaScript:
+
+It’s the most popular programming language for the eleventh year in a row.
+It’s used to add interactivity and dynamic features to static web pages.
+It’s a language that doesn’t need a separate compilation step. 
+It’s platform-agnostic — it just needs a browser to run.
+Developers have spent years creating massive coding libraries that can extend the capabilities of JavaScript outside its usual web browser box.
+Job titles that use JavaScript:
+
+Web Developer, Software Engineer, JavaScript Developer, Mobile App Developer, Front End Developer
+
+Salary estimate with JavaScript skills:
+
+JavaScript developers earn an average of $101,105 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: Low
+
+3. SQL
+
+SQL (Structured Query Language) is a database language that’s used to manage data stored in relational databases. It’s a powerful tool that can be used to perform a variety of tasks, such as querying, updating, and deleting data, and it’s a valuable skill for anyone working with data.
+
+Reasons to learn SQL:
+
+It’s a powerful tool that allows you to draw data from several connected databases.
+It’s in-demand, since more and more businesses are using data to make decisions.
+It’s a relatively easy language to learn because it has a simple syntax and a small number of commands.
+It has different versions tailored for different needs, such as security (example SQL dialects include MySQL or PostgreSQL).
+It can help with tracking trends, since it allows you to use linear progression.
+It helps companies assess their performance by retrieving metrics stored in databases and calculating KPIs.
+Job titles that use SQL:
+
+Data Scientist, Data Analyst, Business Intelligence Analyst, Quality Assurance Engineer, Data Warehouse Architect, SQL Developer
+
+Salary estimate with SQL skills:
+
+SQL developers earn an average of $93,868 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: Low
+
+4. Go
+
+Go, or Golang, is a programming language created by Google in 2007. It was explicitly designed to support large projects, such as the Google search engine. Whenever big data and heavy server loads are involved, Go is the fastest and most accessible language to maintain.
+
+Reasons to learn Go:
+
+It’s used by companies that prefer this young language, including Uber, Dropbox, and Soundcloud.
+It’s a minimalistic language, having fewer ways to do things than C++.
+It requires less to keep the system working over time.
+It comes with built-in libraries, so you’re less likely to rely on a framework.
+It’s procedural, which means it requires less characters.
+It’s a shallower learning curve, even for people with no previous IT experience.
+Job titles that use Go:
+
+Software Engineer, Full Stack Engineer, Web Developer, Go Developer, Data Engineer, Database Administrator
+
+Salary estimate with Go skills:
+
+Go developers earn an average of $99,998 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: Middle
+
+5. Rust
+
+Rust is a fast, efficient language mostly known for its security strengths. It’s harder for humans to learn, but easier for machines to understand. It was released by Mozilla in 2010 and facilitates designing and writing high-performance programming applications.
+
+Reasons to learn Rust:
+
+One of its most common purposes is system programming, i.e. creating operating systems and software.
+It’s one of the more sought-after skills for developers who work with blockchain technologies.
+It’s designed in a way that ensures memory safety, so you can program with a sense of security.
+It’s continuing to evolve and grow with new frameworks, tools, and resources.
+It solves some of developers’ frustrations with memory management problems commonly associated with C and C++.
+Job titles that use Rust:
+
+Rust Developer, Blockchain Engineer, Network Engineer, System Engineer, Game Developer 
+
+Salary estimate with Rust skills:
+
+Rust developers earn an average of $116,843 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficult: High
+
+6. Java
+
+Java is a universal programming language that’s used to develop many well-known applications, programs, websites, and most operating systems for modern smartphones. It’s also one of the best-known and most popular languages, with 17.1 million people working in it.
+
+Reasons to learn Java:
+
+There are many different areas of development in which it operates, and it continues to evolve.
+It’s an object-oriented programming language, which views a program as a set of interacting objects, each with its own properties and behavior.
+It’s a common language, and almost any problem you might encounter using Java has already been figured out by someone else.
+It has mature and useful libraries and frameworks.
+It can be used to develop a program of any complexity — from online shops to banking applications.
+It’s used in a wide variety of fields, including e-commerce, gaming, desktop software, finance, and more.
+Job titles that use Java:
+
+Java Developer, UX Designer, Game Developer, Software Programmer, Quality Assurance Analyst
+
+Salary estimate with Java skills:
+
+Java developers earn an average of $94,863 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: High
+
+7. C and C++
+
+C is one of the oldest and most widely used programming languages that also formed the foundation for C# and Java. C++ is a more advanced version of C. Both of these languages are fundamental for creating fast, efficient, and scalable applications for a wide range of industries.
+
+Reasons to learn C and C++:
+
+C’s purpose, tools, and syntax are designed so that it can closely interact with the computer’s hardware.
+C is written in human-like commands, and has functions similar to the ones in Java or Python.
+Today, a program written in C can run on any physical machine or operating system, be it Ubuntu, Windows, Android, iOS, and so on.
+C++ is a programming language used in creating fast, efficient, and scalable applications for a wide range of industries.
+With its ability to offer high performance, C++ remains a popular choice for developing game engines, operating systems, and other performance-critical software.
+If your career choice pushes you towards mastering C++, rest assured knowing that everything will seem much simpler after it.
+Job titles that use C and C++:
+
+C Developer, High Performance Computing Specialist, Operating Systems Developer, Embedded Systems Developer, Financial Software Developer
+
+Salary estimate with C and C++ skills:
+
+C and C++ developers earn an average of $108,304 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: High
+
+8. C#
+
+C# (read like C-Sharp) is a programming language developed by Microsoft in 1998-2001 exclusively for their .NET framework. It’s very common to see C# as the main language for gaming, desktop applications for Windows, and mobile apps that run on Android. 
+
+Reasons to learn C#:
+
+It uses a human-like syntax, making it popular and suitable for many purposes, from software engineering to web development.
+If you plan to work for a company that uses Microsoft-based infrastructure (the Windows operating system, Azure Cloud services, etc.), consider learning C# and .NET.
+It’s an object-oriented language, which helps you write, read, and test code hassle-free. Beginners can control the structure of data and avoid repeating code and errors.
+It’s easier to master C, C++, or Java if you are familiar with C#. As a result, these skills let you easily switch between C-related languages.
+A rich functional library provides convenient compatibility with the Microsoft ecosystem and the opportunity to develop apps faster without writing multiple custom codes.
+It provides automatic memory management, which saves time and prevents software crashes.
+Job titles that use C#:
+
+Back-End Developer, Full-Stack Engineer, Front-End Engineer, Mobile App Developer, C# Developer
+
+Salary estimate with C# skills:
+
+C# developers earn an average of $114,203 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: High
+
+9. Swift
+
+Swift is a language invented by Apple in 2014 to create Linux and MacOS applications. Although relatively young, its popularity is explained by the fact that most iOS apps are written in Swift. It’s a great language to start with if mobile development and gaming are your goals.
+
+Reasons to learn Swift:
+
+It’s a clean, concise, open-source programming language.
+It eliminates entire classes of unsafe code as a preventative measure.
+It was built to be incredibly user-friendly.
+It offers a knowledgeable community of users.
+It’s designed for safety, with built-in error checking.
+It’s used by some of the biggest companies in the world, including Apple, IBM, and Airbnb.
+Job titles that use Swift:
+
+iOS Developer, Swift Software Engineer, Full-Stack Engineer, Android Developer, Mobile Engineer
+
+Salary estimate with Swift skills:
+
+Swift developers earn an average of $74,748 per year in the US, according to Glassdoor.
+
+Popularity: High
+
+Difficulty: Low
+
+How to choose a programming language
+Once you know your ideal career path, the first step in your journey to becoming a software engineer (or developer, or data scientist, or business analyst, etc.) is to decide which primary programming languages to learn. These four questions can help you calibrate your compass.
+
+1. What is the use case?
+As a rule, all languages correspond with a specific purpose of programming. For example, Swift is a native Apple language not used elsewhere, so those planning to create iPhone and iPad apps would choose it. In contrast, a general-purpose language like Python is adaptable to many uses.
+
+2. How popular is it?
+A language’s popularity corresponds to the number of job openings, but it also affects a language’s median pay range. To better understand where a language you might be interested in learning stands, we recommend conducting some deeper research with the following tools:
+
+TIOBE Index for real-time ratings of programming languages.
+Stack Overflow Developer Survey 2023 for annual trends on popularity, pay, and more.
+Glassdoor’s salaries and job search tools for median salaries and job posting data.
+3. Is it growing or shrinking?
+Demand for specific programming languages ebbs and flows over time. PHP, for example, is still a popular language for web development, but it’s not as popular as it was 10 years ago. Indexes of popularity like those above can help you determine if a language is on the ascent or descent.
+
+4. Who will guide you?
+Acquiring knowledge comes naturally to experienced developers, but when you’re new, a guide is essential. Learning to code on your own is like reading a book in a foreign language that you don’t understand. If you’re motivated to succeed, you need to have a person to help. They can review your code and help when you get stuck — be it a friend, family member, or bootcamp mentor.
+
+Which programming languages to learn based on your career goals
+
+Why you need to know more than one programming language
+As an aspiring tech professional, you might be wondering how many programming languages you need to know. At TripleTen, we help students learn more than one because individuals with multiple languages are paid better due to their versatile experience.
+
+“We advise our students not to limit themselves to one language,” says Anastasia Cherepanova, TripleTen Career Product Lead.
+
+There are numerous languages that are easy to learn. For instance, if you know JavaScript, you’ll need two weeks at most to master TypeScript. We recommend that you expand your horizons.
+Anastasia Cherepanova, TripleTen Career Product Lead
+Once you get started with one language and begin learning more frameworks that allow you to work in different roles within a team, you’ll be pleasantly surprised at how tempted you are to progress even more!
+
+Learning a programming language: Where to start
+There are many ways you can learn a programming language. In a college classroom, through free online resources, or even with the help of a professional bootcamp. Each approach has its pros and cons, but we’re obviously big fans of the bootcamp route.
+
+Why? Because our bootcamp graduates are proof that the right environment can make all the difference in launching a career in tech — in fact, 87% of our graduates get hired within 180 days. If you’re curious whether a bootcamp might be right for you, take this short quiz.
