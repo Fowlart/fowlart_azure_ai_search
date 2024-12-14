@@ -222,7 +222,10 @@ def analyze_text(text:str, analyzer_name: str, index_name: str):
 
     pass
 
-def extract_key_phrases(text: str, client: TextAnalyticsClient, language: str = None) -> list[str]:
+def extract_key_phrases(text: str,
+                        client: TextAnalyticsClient,
+                        language: str = None
+                        ) -> list[str]:
 
     result = []
 
