@@ -46,7 +46,7 @@ class TextPreprocessor:
         self.__extract_key_phrases()
         self.processed_lines.clear()
 
-    # todo: make smart key-phrases extraction, to summarize document
+    # todo: mmake smart key-phrases extraction, to summarize the document
     def __extract_key_phrases(self):
         print(f"{bcolors.OKCYAN} Extracting keywords from a document... {bcolors.ENDC}")
         for line in self.processed_lines:
