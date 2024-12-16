@@ -14,7 +14,6 @@ class TextPreprocessor:
         self.text_analytics_client = get_text_analytics_client()
         self.processed_lines: list[str] = []
         self.path_to_text_bucket = f"{os.getcwd()}/../../resources/docs-bucket/"
-        self.path_to_output_folder = f"{os.getcwd()}/../../resources/docs-output/"
         self.extension_to_consider = ".txt"
         self.unprocessed_files: list[os.DirEntry] = []
         folder = os.scandir(self.path_to_text_bucket)
@@ -41,13 +40,11 @@ class TextPreprocessor:
 
         with (open(dir_entry.path) as file):
             for line in file.readlines():
-                # todo: here we can use Aure text tokenization
+
                 processed_line = self.__remove_empty_lines(self.__remove_punctuation(line))
 
                 if processed_line !="":
                     self.processed_lines.append(processed_line)
-
-        print(self.processed_lines)
 
         self.__write_list_to_file(
             strings=self.processed_lines,
@@ -86,8 +83,6 @@ class TextPreprocessor:
         extract_key_phrases_result: list[ExtractKeyPhrasesResult] = (self.text_analytics_client
                                                       .extract_key_phrases(documents=chunked_lines))
 
-        print("[Debug] view key-phrases results from Language service: ")
-
         debug_key_phrases_results: list[str] = [str(res) for res in extract_key_phrases_result]
 
         self.__write_list_to_file(
@@ -101,11 +96,15 @@ class TextPreprocessor:
             for term in result.key_phrases:
                 key_phrases_set.add(term)
 
-        print("keyPhrasesSet: ")
-        print(key_phrases_set)
+        self.__write_list_to_file(
+            strings=key_phrases_set,
+            new_folder_name="step-2-key-phrases",
+            file_name=dir_entry.name,
+            file_path=dir_entry.path
+        )
     #[END] key_phrases
 
-    def __write_list_to_file(self, strings: list[str],
+    def __write_list_to_file(self, strings: list[str] | set[str],
                              new_folder_name: str,
                              file_path: str,
                              file_name: str):
@@ -124,6 +123,10 @@ class TextPreprocessor:
 
 
     def preprocess_files(self):
+        """
+        Run the function to initialize a process of text file processing
+        :return:
+        """
         if len(self.unprocessed_files) == 0:
             print(f"No any files to preprocess!")
             return

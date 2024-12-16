@@ -202,7 +202,9 @@ def create_an_index(
     return result
 
 def get_tokens(text:str, analyzer_name: str, index_name: str, client: SearchIndexClient) -> list[str]:
-    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,analyzer_name=analyzer_name)
+    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,
+                                                analyzer_name=analyzer_name,
+                                                )
     resp: dict[str] = client.analyze_text(index_name, op).as_dict()
     return [str(el["token"]) for el in resp.get("tokens")]
 
