@@ -138,7 +138,7 @@ if __name__ == "__main__":
     my_semantic_search = SemanticSearch(default_configuration_name="my_semantic_configuration",
                                         configurations=[semantic_configuration])
 
-    # custom_analyzer: Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer] = get_custom_analyzer()
+    #custom_analyzer: Tuple[PatternTokenizer,StopwordsTokenFilter,PatternReplaceCharFilter,CustomAnalyzer] = get_custom_analyzer()
 
 
     # adding suggester
