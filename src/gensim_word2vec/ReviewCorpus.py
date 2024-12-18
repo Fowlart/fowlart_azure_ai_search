@@ -1,6 +1,6 @@
 import polars as pl
 from src.utils.common_utils import get_tokens, get_search_index_client, get_path_to_example_data
-from src.utils.common_utils import  analyze_text, get_tokens, get_search_index_client, get_index_name
+from src.utils.common_utils import  analyze_text, get_tokens, get_search_index_client, get_test_index_name
 
 
 class ReviewsCorpus:
@@ -33,9 +33,9 @@ class ReviewsCorpus:
             text = element["review_text"]
             print(f"Tokenizing: {text} ")
             result = get_tokens(text=text,
-                             analyzer_name="en.microsoft",
-                             index_name=get_index_name(),
-                             client=get_search_index_client())
+                                analyzer_name="en.microsoft",
+                                index_name=get_test_index_name(),
+                                client=get_search_index_client())
             print(f"Result is: {result}")
 
             yield result

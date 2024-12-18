@@ -47,8 +47,8 @@ def get_path_to_example_data() -> str:
 def get_html_template_folder_path() -> str:
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\static-html"
 
-def get_index_name()->str:
-    return "fowlart_product_review_hybrid"
+def get_test_index_name()->str:
+    return "fowlart-product-review-hybrid"
 
 def get_ai_search_endpoint() -> str:
     return f"https://fowlart-ai-search.search.windows.net"
@@ -137,7 +137,7 @@ def get_search_client() -> SearchClient:
 
     return SearchClient(endpoint=service_endpoint,
                         credential=AzureKeyCredential(key),
-                        index_name=get_index_name())
+                        index_name=get_test_index_name())
 
 def get_text_analytics_client():
     ta_credential = AzureKeyCredential(_get_language_service_key())

@@ -3,7 +3,7 @@ import polars as pl
 from azure.search.documents.indexes._search_index_client import SearchClient
 from src.utils.common_utils import get_search_client, extract_key_phrases, get_search_index_client, \
     get_path_to_gensim_model, get_path_to_example_data
-from utils.common_utils import get_text_analytics_client, analyze_text, get_tokens, get_index_name
+from utils.common_utils import get_text_analytics_client, analyze_text, get_tokens, get_test_index_name
 import gensim
 import numpy as np
 from src.utils.common_utils import bcolors as c
@@ -59,9 +59,9 @@ def populate_index() -> None:
         x["KeyPhrases"]= key_phrases
 
         review_tokens = get_tokens(x["ReviewText"],
-                             analyzer_name="en.microsoft",
-                             index_name=get_index_name(),
-                             client=search_index_client)
+                                   analyzer_name="en.microsoft",
+                                   index_name=get_test_index_name(),
+                                   client=search_index_client)
 
         sentence_vector_list: list[numpy.ndarray] = []
 

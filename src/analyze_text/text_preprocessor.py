@@ -14,8 +14,9 @@ class TextPreprocessor:
         self.relevant_path_to_documents = r"../../resources/docs-bucket/"
         self.folder_for_clean_text = "step-0-clean-text"
         self.folder_key_phrases_debug = "key-phrases-debug"
+        self.folder_language_detected = "step-1-language-detected"
         self.folder_text_chunks_debug = "text-chunks-debug"
-        self.folder_key_phrases = "step-1-key-phrases"
+        self.folder_key_phrases = "step-2-key-phrases"
         self.path_to_text_bucket = f"{os.getcwd()}/{self.relevant_path_to_documents}"
         self.extension_to_consider = ".txt"
         # [END] env vars
@@ -101,11 +102,16 @@ class TextPreprocessor:
                                   file_name=dir_entry.name)
 
         lang_code = self.__detect_language(docs=chunked_lines)
+
+        self.__write_list_to_file(strings=[lang_code],
+            new_folder_name=self.folder_language_detected,
+            file_name=dir_entry.name,
+            file_path=dir_entry.path)
+
         extract_key_phrases_result: list[ExtractKeyPhrasesResult] = \
         (self.text_analytics_client.extract_key_phrases(documents=chunked_lines, language=lang_code))
         debug_key_phrases_results: list[str] = [str(res) for res in extract_key_phrases_result]
-        self.__write_list_to_file(
-            strings=debug_key_phrases_results,
+        self.__write_list_to_file(strings=debug_key_phrases_results,
             new_folder_name=self.folder_key_phrases_debug,
             file_name=dir_entry.name,
             file_path=dir_entry.path)
@@ -114,8 +120,7 @@ class TextPreprocessor:
             for term in result.key_phrases:
                 key_phrases_set.add(term)
 
-        self.__write_list_to_file(
-            strings=key_phrases_set,
+        self.__write_list_to_file(strings=key_phrases_set,
             new_folder_name=self.folder_key_phrases,
             file_name=dir_entry.name,
             file_path=dir_entry.path)

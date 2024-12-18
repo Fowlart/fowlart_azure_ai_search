@@ -1,5 +1,5 @@
 from azure.search.documents.indexes import SearchIndexClient
-from utils.common_utils import get_tokens, bcolors as c, get_index_name, get_path_to_gensim_model
+from utils.common_utils import get_tokens, bcolors as c, get_test_index_name, get_path_to_gensim_model
 import gensim
 import numpy as np
 
@@ -9,9 +9,9 @@ def get_vector_from_sentence(text: str,
 
 
     tokens = get_tokens(text,
-                               analyzer_name="en.microsoft",
-                               index_name=get_index_name(),
-                               client=search_index_client)
+                        analyzer_name="en.microsoft",
+                        index_name=get_test_index_name(),
+                        client=search_index_client)
 
     trained_model = gensim.models.Word2Vec.load(get_path_to_gensim_model()).wv
 

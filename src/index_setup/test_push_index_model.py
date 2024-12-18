@@ -27,8 +27,8 @@ from azure.search.documents.indexes.models import (ComplexField,
                                                    SearchField,
                                                    SearchSuggester)
 
-from src.utils.common_utils import create_an_index, get_index_name
-from populate_index import populate_index
+from src.utils.common_utils import create_an_index, get_test_index_name
+from src.index_setup.test_populate_index import populate_index
 
 if __name__ == "__main__":
 
@@ -149,7 +149,7 @@ if __name__ == "__main__":
                                                           source_fields=["ProductTitle"])
 
     index: SearchIndex = create_an_index(
-                    index_name=get_index_name(),
+                    index_name=get_test_index_name(),
                     fields_definition=fields,
                     #[my_custom_lucene_analyzer],
                     semantic_search=my_semantic_search,

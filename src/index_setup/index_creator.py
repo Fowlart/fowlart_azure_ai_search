@@ -1,4 +1,10 @@
 from typing import List
+
+from azure.search.documents.indexes.models import (SemanticField,
+                                                   SemanticPrioritizedFields,
+                                                   SemanticConfiguration,
+                                                   SemanticSearch)
+
 from utils.common_utils import create_an_index
 
 from azure.search.documents.indexes.models import (
@@ -7,6 +13,28 @@ from azure.search.documents.indexes.models import (
     SearchField)
 
 class BaseIndexCreator:
+
+    def get_semantic_search_configuration(self) -> SemanticSearch:
+
+        semantic_key_phrases_field = SemanticField(field_name="key_phrases")
+
+        # todo: there is no notion of a content field inside the index, but that might change.
+        #   we can pull the first n sentences from the text or, for example, use LLM to summarize.
+        semantic_content_field = SemanticField(field_name="_")
+
+        semantic_prioritized_fields = SemanticPrioritizedFields(
+
+        #content_fields=[semantic_content_field],
+
+            keywords_fields=[semantic_key_phrases_field])
+
+        semantic_configuration = SemanticConfiguration(name="my_semantic_configuration",
+                                                       prioritized_fields=semantic_prioritized_fields)
+
+        my_semantic_search = SemanticSearch(default_configuration_name="my_semantic_configuration",
+                                            configurations=[semantic_configuration])
+
+        return my_semantic_search
 
     def get_base_index_name(self) -> str:
         return "fowlart-personal-documents-index"
@@ -24,14 +52,6 @@ class BaseIndexCreator:
                         analyzer_name="keyword"),
 
             SearchableField(name="metadata_storage_content_type",
-                            type=SearchFieldDataType.String,
-                            searchable=True,
-                            retrievable=True,
-                            filterable=False,
-                            sortable=True,
-                            facetable=True),
-
-            SearchableField(name="metadata_language",
                             type=SearchFieldDataType.String,
                             searchable=True,
                             retrievable=True,
@@ -97,9 +117,7 @@ class BaseIndexCreator:
                             sortable=False,
                             facetable=True),
 
-            # This field might be the essence of the search app.
-            # My content is unstructured data.To find a match within
-            # unstructured data we need to vectorize the content.
+            #todo: vectorize the content.
             # SearchField(
             #     name="vectorized_content",
             #     collection=True,
@@ -116,6 +134,7 @@ class BaseIndexCreator:
 
         create_an_index(
             index_name=self.get_base_index_name(),
-            fields_definition=self.get_fields_definition()
+            fields_definition=self.get_fields_definition(),
+            semantic_search=self.get_semantic_search_configuration()
         )
 
