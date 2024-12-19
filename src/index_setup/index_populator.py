@@ -31,18 +31,14 @@ class BaseIndexPopulator:
 
     def _add_language_label(self, path) -> str:
         # todo: make refactor of coupled code (use dependency injection framework?)
-        path.replace("docs-bucket", "step-1-language-detected")
-        with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+        with open(path.replace("docs-bucket", "step-1-language-detected"), 'r', encoding='utf-8', errors='ignore') as f:
             content: str = f.read()
         return content.strip()
 
     def _add_key_phrases(self, path) -> list[str]:
-        # todo: make refactor of coupled code (use dependency injection framework?)
-        path.replace("docs-bucket", "step-2-key-phrases")
-
         result = []
-
-        with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+        # todo: make refactor of coupled code (use dependency injection framework?)
+        with open(path.replace("docs-bucket", "step-2-key-phrases"), 'r', encoding='utf-8', errors='ignore') as f:
             for line in f.readlines():
                 result.append(line.strip())
 
