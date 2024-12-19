@@ -3,7 +3,6 @@ import mimetypes
 import time
 from utils.common_utils import get_tokens, get_search_index_client, get_search_client
 from azure.search.documents.indexes._search_index_client import SearchClient
-import base64
 import uuid
 
 class BaseIndexPopulator:
