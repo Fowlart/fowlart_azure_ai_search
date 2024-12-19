@@ -4,7 +4,8 @@ from azure.search.documents.indexes.models import (SemanticField,
                                                    SemanticPrioritizedFields,
                                                    SemanticConfiguration,
                                                    SemanticSearch,
-                                                   SearchSuggester)
+                                                   SearchSuggester,
+                                                   SimpleField)
 
 from utils.common_utils import create_an_index
 
@@ -67,11 +68,11 @@ class BaseIndexCreator:
                             sortable=True,
                             facetable=True),
 
-            SearchableField(name="metadata_word_count",
-                            type=SearchFieldDataType.String,
-                            searchable=True,
+            SimpleField(name="metadata_word_count",
+                            type=SearchFieldDataType.Int64,
+                            searchable=False,
                             retrievable=True,
-                            filterable=False,
+                            filterable=True,
                             sortable=True,
                             facetable=True),
 
@@ -91,9 +92,9 @@ class BaseIndexCreator:
                             sortable=True,
                             facetable=True),
 
-            SearchableField(name="metadata_storage_size",
+            SimpleField(name="metadata_storage_size",
                             type=SearchFieldDataType.Int64,
-                            searchable=True,
+                            searchable=False,
                             retrievable=True,
                             filterable=True,
                             sortable=True,
@@ -138,11 +139,11 @@ class BaseIndexCreator:
         return fields_definition
 
     def get_suggester_configuration(self) -> list[SearchSuggester]:
-
+        """"
+         :return list[SearchSuggester]
+         Only one suggester can be configured at the time, at the current API version
+        """
         keywords_suggester: SearchSuggester = (SearchSuggester(name="keywords_suggester",source_fields=["key_phrases"]))
-
-        # todo: an index cannot have more than one suggester with searchMode='analyzingInfixMatching'
-        title_suggester: SearchSuggester = SearchSuggester(name="file_name_suggester", source_fields=["file_name"])
 
         return [keywords_suggester]
 

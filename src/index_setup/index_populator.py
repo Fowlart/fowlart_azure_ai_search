@@ -100,10 +100,10 @@ class BaseIndexPopulator:
 
                     metadata = {
                         "metadata_storage_content_type": content_type,
-                        "metadata_word_count": str(tokens_count),
+                        "metadata_word_count": int(tokens_count),
                         "metadata_storage_path": file_path,
                         "metadata_storage_last_modified": last_modified,
-                        "metadata_storage_size": str(file_size),
+                        "metadata_storage_size": file_size,
 
                         # todo: add to pydoc
                         "file_name": file,
