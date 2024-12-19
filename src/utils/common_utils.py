@@ -130,14 +130,14 @@ def get_search_index_client() -> SearchIndexClient:
     return SearchIndexClient(service_endpoint, AzureKeyCredential(key))
 
 
-def get_search_client() -> SearchClient:
+def get_search_client(index_name: str = None) -> SearchClient:
     service_endpoint = get_ai_search_endpoint()
-
     key = _get_search_service_key()
+    index_name = get_test_index_name() if (index_name is None) else index_name
 
     return SearchClient(endpoint=service_endpoint,
                         credential=AzureKeyCredential(key),
-                        index_name=get_test_index_name())
+                        index_name=index_name)
 
 def get_text_analytics_client():
     ta_credential = AzureKeyCredential(_get_language_service_key())
