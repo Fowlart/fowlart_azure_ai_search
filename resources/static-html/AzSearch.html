@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <head>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
@@ -64,6 +65,7 @@
                 </div>
             </div>
         </div>
+    </div>
         <!-- Bootstrap core JavaScript
             ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
@@ -90,7 +92,11 @@
     service: "fowlart-ai-search", 
     dnsSuffix:"search.windows.net" });
     
-    const resultTemplate = `<div class="col-xs-12 col-sm-9 col-md-9"><h2>{{ProductTitle}}</h2><h3>{{ReviewRating}}</h3><h3>{{ReviewText}}</h3><div class="resultDescription">{{KeyPhrases}}</div></div>`;
+    const resultTemplate = `<div class="col-xs-12 col-sm-9 col-md-9">
+    <h3>file name: {{file_name}}</h3>
+    <h3>last modified: {{metadata_storage_last_modified}}</h3>
+    <h3>approximate words count: {{metadata_word_count}}</h3>
+    <div class="resultDescription"><h3>keywords:</h3>{{key_phrases}}</div></div>`;
 
     // Set some processors to format results for display
     var suggestionsProcessor = function (results) {
@@ -102,15 +108,15 @@
 
     automagic.store.setSuggestionsProcessor(suggestionsProcessor);
 
-    var suggestionsTemplate = `<p> Product Title: {{ProductTitle}} </p> Key Phrases: {{KeyPhrases}} </p> {{{searchText}}}`;
+    var suggestionsTemplate = `<p> file: {{file_name}} </p>  <p>match in keywords: {{{searchText}}} </p>`;
 
     // Add a search box that uses suggester "keywords_suggester", grabbing some additional fields to display during suggestions. Use the template defined above
     automagic.addSearchBox("searchBox",
         {
             highlightPreTag: "<b>",
             highlightPostTag: "</b>",
-            suggesterName: "title_suggester",
-            select: "ProductTitle, KeyPhrases"
+            suggesterName: "keywords_suggester",
+            select: "file_name, key_phrases"
         },"",suggestionsTemplate);
 
     
@@ -121,7 +127,7 @@
     // Adds a pager control << 1 2 3 ... >>
     automagic.addPager("pager");
         
-    automagic.addCheckboxFacet("ReviewRatingFacet", "ReviewRating", "number");
+    automagic.addCheckboxFacet("WordCountFacet", "metadata_word_count", "number");
 
 
     // Adds a button to clear any applied filters

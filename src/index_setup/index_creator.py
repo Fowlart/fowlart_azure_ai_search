@@ -3,7 +3,8 @@ from typing import List
 from azure.search.documents.indexes.models import (SemanticField,
                                                    SemanticPrioritizedFields,
                                                    SemanticConfiguration,
-                                                   SemanticSearch)
+                                                   SemanticSearch,
+                                                   SearchSuggester)
 
 from utils.common_utils import create_an_index
 
@@ -48,7 +49,14 @@ class BaseIndexCreator:
                         key=True,
                         sortable=True,
                         filterable=True,
+                        facetable=True),
+
+            SearchField(name="file_name",
+                        type=SearchFieldDataType.String,
+                        sortable=True,
+                        filterable=True,
                         facetable=True,
+                        # todo: what is analyzer_name ?
                         analyzer_name="keyword"),
 
             SearchableField(name="metadata_storage_content_type",
@@ -108,7 +116,7 @@ class BaseIndexCreator:
                             sortable=False,
                             facetable=True),
 
-            # The main purpose of a custom search app is to return a link to the actual file
+            # the main purpose of a custom search app is to return a link to the actual file
             SearchableField(name="url",
                             type=SearchFieldDataType.String,
                             searchable=False,
@@ -129,12 +137,23 @@ class BaseIndexCreator:
 
         return fields_definition
 
+    def get_suggester_configuration(self) -> list[SearchSuggester]:
+
+        keywords_suggester: SearchSuggester = (SearchSuggester(name="keywords_suggester",source_fields=["key_phrases"]))
+
+        # todo: an index cannot have more than one suggester with searchMode='analyzingInfixMatching'
+        title_suggester: SearchSuggester = SearchSuggester(name="file_name_suggester", source_fields=["file_name"])
+
+        return [keywords_suggester]
+
+
 
     def create_index(self):
 
         create_an_index(
             index_name=self.get_base_index_name(),
             fields_definition=self.get_fields_definition(),
-            semantic_search=self.get_semantic_search_configuration()
+            semantic_search=self.get_semantic_search_configuration(),
+            suggesters=self.get_suggester_configuration()
         )
 

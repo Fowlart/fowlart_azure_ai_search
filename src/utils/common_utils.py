@@ -191,8 +191,7 @@ def create_an_index(
                         semantic_search=semantic_search,
                         vector_search=vector_search,
                         fields_definition ="",
-                        suggesters=suggesters
-                        )
+                        suggesters=suggesters)
 
     result: SearchIndex = search_index_client.create_or_update_index(index)
 

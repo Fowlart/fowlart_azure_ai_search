@@ -34,7 +34,6 @@ class BaseIndexPopulator:
         for result in upload_results:
             print(result)
 
-
     def _add_language_label(self, path) -> str:
         # todo: make refactor of coupled code (use dependency injection framework?)
         with open(path.replace("docs-bucket", "step-1-language-detected"), 'r', encoding='utf-8', errors='ignore') as f:
@@ -105,7 +104,9 @@ class BaseIndexPopulator:
                         "metadata_storage_path": file_path,
                         "metadata_storage_last_modified": last_modified,
                         "metadata_storage_size": str(file_size),
+
                         # todo: add to pydoc
+                        "file_name": file,
                         "language": self._add_language_label(file_path),
                         "key_phrases": self._add_key_phrases(file_path),
                         "document_id": self._get_a_uuid()
