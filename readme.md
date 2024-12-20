@@ -12,9 +12,9 @@ Python code processes the documents:
 
 
 - **How can data in text files be searched more effectively?**.
+  - _custom content vectorization ?_
   - semantic search (**AI Search**) ?
   - question answering (**AI Search**) ?
-  - custom content vectorization ?
   - custom text classification (**AI Search**) ?
   - custom NER (**AI Search**) ?
 
