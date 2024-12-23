@@ -1,6 +1,6 @@
-from operator import index
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
+import platform
 
 from azure.search.documents.indexes import SearchIndexerClient
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
@@ -35,6 +35,20 @@ class bcolors:
 
 # Todo: refactor
 # [Local env: BEGIN]
+def get_iaac_folder_name() -> str:
+    platform_name = str(platform.system()).lower()
+    return "iaac_linux_bash" if "linux" in platform_name else "iaac_windows_powershell"
+
+def get_correct_file_ext() -> str:
+    folder_name = get_iaac_folder_name()
+    return ".sh" if folder_name =="iaac_linux_bash" else ".ps1"
+
+def get_terminal_command(file_name_to_execute: str) -> list[str]:
+    folder_name = get_iaac_folder_name()
+    win_cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', f'..\\{folder_name}\\{file_name_to_execute}{get_correct_file_ext()}']
+    linux_cmd = ['sh', f'../{get_iaac_folder_name()}/{file_name_to_execute}{get_correct_file_ext()}']
+    return linux_cmd if "linux" in folder_name else win_cmd
+
 def get_path_to_audio_sample() -> str:
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\voice-records\sample_4.wav"
 
@@ -58,7 +72,8 @@ def get_language_service_endpoint() -> str:
 
 def _get_speech_service_key()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\speech_service_api_key.ps1']
+    file_name = "speech_service_api_key"
+    cmd = get_terminal_command(file_name)
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting speech service key extraction {bcolors.ENDC}")
     while True:
@@ -73,22 +88,27 @@ def _get_speech_service_key()->str:
 
 def _get_language_service_key()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\language_service_api_key.ps1']
+    file_name = "language_service_api_key"
+    cmd = get_terminal_command(file_name)
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting language service key extraction {bcolors.ENDC}")
     while True:
         line = proc.stdout.readline()
         if line != b'':
+            print(line)
             the_line = line.decode("utf-8").strip()
+            print(the_line)
             if "key is>" in the_line:
                 result = the_line.split(">")[-1]
         else:
             break
+    print(f"extracted-key: {result}")
     return result
 
 def _get_search_service_key()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\ai_service_api_key.ps1']
+    file_name = "ai_service_api_key"
+    cmd = get_terminal_command(file_name)
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting search service key extraction {bcolors.ENDC}")
     while True:
@@ -103,7 +123,8 @@ def _get_search_service_key()->str:
 
 def _get_storage_account_connection_string()->str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\get_storage_account_connection_string.ps1']
+    file_name = "get_storage_account_connection_string"
+    cmd = get_terminal_command(file_name)
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
     while True:
@@ -115,7 +136,6 @@ def _get_storage_account_connection_string()->str:
         else:
             break
     return result
-
 # [Local env: END]
 
 def get_search_indexer_client()-> SearchIndexerClient:
@@ -148,7 +168,7 @@ def get_text_analytics_client():
 
 def get_query_key() -> str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', '..\\iaac_powershell\\query_key.ps1']
+    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', f'..\\{get_iaac_folder_name()}\\query_key{get_correct_file_ext()}']
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
     while True:
@@ -201,9 +221,7 @@ def create_an_index(
     return result
 
 def get_tokens(text:str, analyzer_name: str, index_name: str, client: SearchIndexClient) -> list[str]:
-    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,
-                                                analyzer_name=analyzer_name,
-                                                )
+    op: AnalyzeTextOptions = AnalyzeTextOptions(text=text,analyzer_name=analyzer_name)
     resp: dict[str] = client.analyze_text(index_name, op).as_dict()
     return [str(el["token"]) for el in resp.get("tokens")]
 

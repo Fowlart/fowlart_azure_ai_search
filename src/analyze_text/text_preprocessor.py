@@ -64,10 +64,7 @@ class TextPreprocessor:
         """
 
         # download punkt sentence tokenizer if you haven't already
-        try:
-            nltk.data.find('tokenizers/punkt')
-        except LookupError:
-            nltk.download('punkt')
+        nltk.data.find('tokenizers/punkt')
 
         text = "".join(self.processed_lines)  # Combine all lines into a single string
         sentences = nltk.sent_tokenize(text)  # Split into sentences
