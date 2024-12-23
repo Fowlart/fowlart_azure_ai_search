@@ -59,7 +59,8 @@ def get_path_to_example_data() -> str:
     return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\data\fdfa65de-5a85-4422-b7f6-5c03e8e4a317"
 
 def get_html_template_folder_path() -> str:
-    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\static-html"
+    platform_name = str(platform.system()).lower()
+    return "../../resources/static-html/AzSearch.html" if "linux" in platform_name else "..\\..\\resources\\static-html\\AzSearch.html"
 
 def get_test_index_name()->str:
     return "fowlart-product-review-hybrid"
@@ -168,7 +169,8 @@ def get_text_analytics_client():
 
 def get_query_key() -> str:
     result = ""
-    cmd = ['powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', f'..\\{get_iaac_folder_name()}\\query_key{get_correct_file_ext()}']
+    file_name = "query_key"
+    cmd = get_terminal_command(file_name)
     proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
     print(f"{bcolors.OKBLUE} Starting {__name__}.{_get_search_service_key.__name__} {bcolors.ENDC}")
     while True:

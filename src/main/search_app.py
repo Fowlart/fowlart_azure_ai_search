@@ -16,7 +16,7 @@ def prepare_index() -> str:
 @app.route("/")
 def hello_world():
 
-    file = open(f"{get_html_template_folder_path()}\\AzSearch.html", "r")
+    file = open(get_html_template_folder_path(), "r")
 
     content: str = str(file.read())
 

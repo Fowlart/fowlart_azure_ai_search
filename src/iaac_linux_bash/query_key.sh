@@ -14,4 +14,4 @@ searchResult=$(az search query-key create \
 key=$(echo "$searchResult" | jq -r '.key')
 
 # Print the key
-echo "key is: $key"
+echo "key is>$key"
