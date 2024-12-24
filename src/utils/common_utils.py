@@ -1,7 +1,8 @@
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
 import platform
-
+from dotenv import load_dotenv
+import os
 from azure.search.documents.indexes import SearchIndexerClient
 from azure.search.documents.indexes._search_index_client import SearchClient, SearchIndexClient
 from azure.search.documents.indexes._generated.models import (CorsOptions,
@@ -50,13 +51,16 @@ def get_terminal_command(file_name_to_execute: str) -> list[str]:
     return linux_cmd if "linux" in folder_name else win_cmd
 
 def get_path_to_audio_sample() -> str:
-    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\voice-records\sample_4.wav"
+    load_dotenv()
+    return os.getenv("PATH_TO_SOUND_SAMPLE")
 
 def get_path_to_gensim_model() -> str:
-    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\gensim-models\main-model-l.txt"
+    load_dotenv()
+    return os.getenv("PATH_TO_GENSIM_MODEL")
 
 def get_path_to_example_data() -> str:
-    return r"C:\Users\Artur.Semikov\PycharmProjects\FowlartAiSearch\resources\data\fdfa65de-5a85-4422-b7f6-5c03e8e4a317"
+    load_dotenv()
+    return os.getenv("PATH_TO_DELTA_TABLE")
 
 def get_html_template_folder_path() -> str:
     platform_name = str(platform.system()).lower()
@@ -247,15 +251,10 @@ def extract_key_phrases(text: str,
                         client: TextAnalyticsClient,
                         language: str = None
                         ) -> list[str]:
-
     result = []
-
     try:
         documents = [text]
-
-        response = client.extract_key_phrases(documents=documents,
-                                              language = language)[0]
-
+        response = client.extract_key_phrases(documents=documents,language = language)[0]
         if not response.is_error:
             result = response.key_phrases
         else:
