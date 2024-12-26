@@ -1,9 +1,9 @@
 from collections import Counter
 from os import DirEntry
 from azure.ai.textanalytics import ExtractKeyPhrasesResult, DetectLanguageResult, DetectedLanguage
-from utils.common_utils import get_text_analytics_client
+from src.utils.common_utils import get_text_analytics_client
 import os
-from utils.common_utils import bcolors
+from src.utils.common_utils import bcolors
 from pathlib import Path
 import nltk
 
